@@ -42,19 +42,19 @@
 
 #define CHDeclareClass(name) \
 	@class name; \
-	static id name ## $; \
-	static id name ## $m; \
-	static id name ## $s;
+	static id CHClass(name); \
+	static id CHMetaClass(name); \
+	static id CHSuperClass(name);
 	
 #define CHLoadLateClass(name) do { \
-	name ## $ = objc_getClass(#name); \
-	name ## $m = object_getClass(name ## $); \
-	name ## $s = class_getSuperclass(name ## $); \
+	CHClass(name) = objc_getClass(#name); \
+	CHMetaClass(name) = object_getClass(CHClass(name)); \
+	CHSuperClass(name) = class_getSuperclass(CHClass(name)); \
 } while(0)
 #define CHLoadClass(name) do { \
-	name ## $ = [name class]; \
-	name ## $m = object_getClass(name ## $); \
-	name ## $s = class_getSuperclass(name ## $); \
+	CHClass(name) = [name class]; \
+	CHMetaClass(name) = object_getClass(CHClass(name)); \
+	CHSuperClass(name) = class_getSuperclass(CHClass(name)); \
 } while(0)
 
 #define CHClass(name) name ## $
@@ -94,21 +94,21 @@
 })
 #endif
 
-#define CHHook(class, imp) CHHookImpl(class, imp, class ## $, CHSelFromImpName(imp))
-#define CHHook0(class, name) CHHookImpl(class, name, class ## $, @selector(name))
-#define CHHook1(class, name1) CHHookImpl(class, name1 ## $, class ## $, @selector(name1:))
-#define CHHook2(class, name1, name2) CHHookImpl(class, name1 ## $ ## name2 ## $, class ## $, @selector(name1:name2:))
-#define CHHook3(class, name1, name2, name3) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $, class ## $, @selector(name1:name2:name3:))
-#define CHHook4(class, name1, name2, name3, name4) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, class ## $, @selector(name1:name2:name3:name4:))
-#define CHHook5(class, name1, name2, name3, name4, name5) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, class ## $, @selector(name1:name2:name3:name4:name5:))
+#define CHHook(class, imp) CHHookImpl(class, imp, CHClass(class), CHSelFromImpName(imp))
+#define CHHook0(class, name) CHHookImpl(class, name, CHClass(class), @selector(name))
+#define CHHook1(class, name1) CHHookImpl(class, name1 ## $, CHClass(class), @selector(name1:))
+#define CHHook2(class, name1, name2) CHHookImpl(class, name1 ## $ ## name2 ## $, CHClass(class), @selector(name1:name2:))
+#define CHHook3(class, name1, name2, name3) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHClass(class), @selector(name1:name2:name3:))
+#define CHHook4(class, name1, name2, name3, name4) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHClass(class), @selector(name1:name2:name3:name4:))
+#define CHHook5(class, name1, name2, name3, name4, name5) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHClass(class), @selector(name1:name2:name3:name4:name5:))
 
-#define CHClassHook(class, imp) CHHookImpl(class, imp, object_getClass(class ## $), CHSelFromImpName(imp))
-#define CHClassHook0(class, name) CHHookImpl(class, name, object_getClass(class ## $), @selector(name))
-#define CHClassHook1(class, name1) CHHookImpl(class, name1 ## $, object_getClass(class ## $), @selector(name1:))
-#define CHClassHook2(class, name1, name2) CHHookImpl(class, name1 ## $ ## name2 ## $, object_getClass(class ## $), @selector(name1:name2:))
-#define CHClassHook3(class, name1, name2, name3) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $, object_getClass(class ## $), @selector(name1:name2:name3:))
-#define CHClassHook4(class, name1, name2, name3, name4) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, object_getClass(class ## $), @selector(name1:name2:name3:name4:))
-#define CHClassHook5(class, name1, name2, name3, name4, name5) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, object_getClass(class ## $), @selector(name1:name2:name3:name4:name5:))
+#define CHClassHook(class, imp) CHHookImpl(class, imp, CHMetaClass(class), CHSelFromImpName(imp))
+#define CHClassHook0(class, name) CHHookImpl(class, name, CHMetaClass(class), @selector(name))
+#define CHClassHook1(class, name1) CHHookImpl(class, name1 ## $, CHMetaClass(class), @selector(name1:))
+#define CHClassHook2(class, name1, name2) CHHookImpl(class, name1 ## $ ## name2 ## $, CHMetaClass(class), @selector(name1:name2:))
+#define CHClassHook3(class, name1, name2, name3) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHMetaClass(class), @selector(name1:name2:name3:))
+#define CHClassHook4(class, name1, name2, name3, name4) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:))
+#define CHClassHook5(class, name1, name2, name3, name4, name5) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:name5:))
 
 // For Replacement Functions
 #ifdef CHUseSubstrate
