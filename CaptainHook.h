@@ -151,20 +151,20 @@
 #define CHClassMethod5(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
 	CHMethod_(type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
 		
-#define CHSuper(class_type, sel, name, args...) \
-	_ ## class_type ## _ ## name(self, @selector(sel), ##args)
+#define CHSuper(class_type, _cmd, name, args...) \
+	_ ## class_type ## _ ## name(self, _cmd, ##args)
 #define CHSuper0(class_type, name) \
-	CHSuper(class_type, name, name)
+	CHSuper(class_type, @selector(name), name)
 #define CHSuper1(class_type, name1, val1) \
-	CHSuper(class_type, name1:, name1 ## $, val1)
+	CHSuper(class_type, @selector(name1:), name1 ## $, val1)
 #define CHSuper2(class_type, name1, val1, name2, val2) \
-	CHSuper(class_type, name1:name2:, namename1 ## $ ## name2 ## $, val1, val2)
+	CHSuper(class_type, @selector(name1:name2:), name1 ## $ ## name2 ## $, val1, val2)
 #define CHSuper3(class_type, name1, val1, name2, val2, name3, val3) \
-	CHSuper(class_type, name1:name2:name3:, name1 ## $ ## name2 ## $ ## name3 ## $, val1, val2, val3)
+	CHSuper(class_type, @selector(name1:name2:name3:), name1 ## $ ## name2 ## $ ## name3 ## $, val1, val2, val3)
 #define CHSuper4(class_type, name1, val1, name2, val2, name3, val3, name4, val4) \
-	CHSuper(class_type, name1:name2:name3:name4:, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, val1, val2, val3, val4)
+	CHSuper(class_type, @selector(name1:name2:name3:name4:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, val1, val2, val3, val4)
 #define CHSuper5(class_type, name1, val1, name2, val2, name3, val3, name4, val4, name5, val5) \
-	CHSuper(class_type, name1:name2:name3:name4:name5:, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, val1, val2, val3, val4, val5)
+	CHSuper(class_type, @selector(name1:name2:name3:name4:name5:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, val1, val2, val3, val4, val5)
 
 // Declarative-style
 
