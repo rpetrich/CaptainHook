@@ -152,7 +152,7 @@
 	CHMethod_(type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
 		
 #define CHSuper(class_type, sel, name, args...) \
-	_ ## class_type ## _ ## name(self, @selector(sel), _cmd, ##args)
+	_ ## class_type ## _ ## name(self, @selector(sel), ##args)
 #define CHSuper0(class_type, name) \
 	CHSuper(class_type, name, name)
 #define CHSuper1(class_type, name1, val1) \
