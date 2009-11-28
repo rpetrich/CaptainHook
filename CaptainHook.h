@@ -45,6 +45,12 @@
 	static id CHClass(name); \
 	static id CHMetaClass(name); \
 	static id CHSuperClass(name);
+#ifdef __cplusplus
+	// C++ doesnt like to have multiple declarations of the same variable :(
+	#define CHDeclareClass_(name) @class name;
+#else
+	#define CHDeclareClass_(name) CHDeclareClass(name)
+#endif
 	
 #define CHLoadLateClass(name) do { \
 	CHClass(name) = objc_getClass(#name); \
@@ -113,11 +119,11 @@
 // For Replacement Functions
 #ifdef CHUseSubstrate
 #define CHMethod_(type, class_type, class_name, name, supercall, args...) \
-	CHDeclareClass(class_name) \
+	CHDeclareClass_(class_name) \
 	static type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args)
 #else
 #define CHMethod_(type, class_type, class_name, name, supercall, args...) \
-	CHDeclareClass(class_name) \
+	CHDeclareClass_(class_name) \
 	static type (*_ ## class_name ## _ ## name)(class_name *self, SEL _cmd, ##args); \
 	static type $$ ## class_name ## _ ## name(class_name *self, SEL _cmd, ##args) { \
 		typedef type (*supType)(id, SEL, ## args); \
@@ -169,7 +175,7 @@
 // Declarative-style
 
 #define CHDeclareMethod_(type, class_type, class_name, name, supercall, sel, args...) \
-	CHDeclareClass(class_name) \
+	CHDeclareClass_(class_name) \
 	static type (*_ ## class_name ## _ ## name)(class_name *self, SEL _cmd, ##args); \
 	static type $$ ## class_name ## _ ## name(class_name *self, SEL _cmd, ##args); \
 	static type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args); \
@@ -192,7 +198,7 @@
 	CHDeclareMethod_(type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ name5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), name1:name2:name3:name4:name5:, type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
 
 #define CHDeclareClassMethod_(type, class_type, class_name, name, supercall, sel, args...) \
-	CHDeclareClass(class_name) \
+	CHDeclareClass_(class_name) \
 	static type (*_ ## class_name ## _ ## name)(class_name *self, SEL _cmd, ##args); \
 	static type $$ ## class_name ## _ ## name(class_name *self, SEL _cmd, ##args); \
 	static type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args); \
@@ -222,7 +228,7 @@
 
 // Retrieve reference to an Ivar value (can read and assign)
 __attribute__((unused)) CHInline
-static inline char *CHIvar(id object, char *name)
+static char *CHIvar(id object, char *name)
 {
 	Ivar ivar = class_getInstanceVariable(object_getClass(object), name);
 	if (ivar)
@@ -235,7 +241,7 @@ static inline char *CHIvar(id object, char *name)
 
 // Scope Autorelease
 __attribute__((unused)) CHInline
-static void CHInline CHScopeReleased(id sro)
+static void CHScopeReleased(id sro)
 {
     [sro release];
 }
@@ -250,7 +256,7 @@ static void CHInline CHScopeReleased(id sro)
 	void NSPopAutoreleasePool(void *token);
 #endif
 #define CHAutoreleasePoolForScope() \
-	void *CHAutoreleasePoolForScope __attribute__((cleanup(NSPopAutoreleasePool))) = NSPushAutoreleasePool(0)
+	void *CHAutoreleasePoolForScope __attribute__((unused)) __attribute__((cleanup(NSPopAutoreleasePool))) = NSPushAutoreleasePool(0)
 
 #define CHBuildAssert(condition) \
 	((void)sizeof(char[1 - 2*!!(condition)]))
