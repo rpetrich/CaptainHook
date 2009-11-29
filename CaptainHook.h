@@ -228,15 +228,15 @@
 
 // Retrieve reference to an Ivar value (can read and assign)
 __attribute__((unused)) CHInline
-static char *CHIvar(id object, char *name)
+static void *CHIvar_(id object, const char *name)
 {
 	Ivar ivar = class_getInstanceVariable(object_getClass(object), name);
 	if (ivar)
-		return &((char *)object)[ivar_getOffset(ivar)];
+		return (void *)&((char *)object)[ivar_getOffset(ivar)];
 	return NULL;
 }
 #define CHIvar(object, name, type) \
-	(*(type*)CHIvar(object, #name))
+	(*(type*)CHIvar_(object, #name))
 	// Warning: Dereferences NULL if object is nil or name isn't found. To avoid this save &CHIvar(...) and test if != NULL
 
 // Scope Autorelease
