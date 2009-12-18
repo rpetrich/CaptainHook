@@ -40,11 +40,16 @@
 
 // Retrieveing classes/testing against objects
 
+struct CHClassDeclaration {
+	id class;
+	id metaClass;
+	id superClass;
+};
+typedef struct CHClassDeclaration CHClassDeclaration;
+
 #define CHDeclareClass(name) \
 	@class name; \
-	static id CHClass(name); \
-	static id CHMetaClass(name); \
-	static id CHSuperClass(name);
+	static CHClassDeclaration name ## $;
 	
 #define CHLoadLateClass(name) do { \
 	CHClass(name) = objc_getClass(#name); \
@@ -57,9 +62,9 @@
 	CHSuperClass(name) = class_getSuperclass(CHClass(name)); \
 } while(0)
 
-#define CHClass(name) name ## $
-#define CHMetaClass(name) name ## $m
-#define CHSuperClass(name) name ## $s
+#define CHClass(name) name ## $.class
+#define CHMetaClass(name) name ## $.metaClass
+#define CHSuperClass(name) name ## $.superClass
 #define CHAlloc(name) ((name *)[CHClass(name) alloc])
 #define CHSharedInstance(name) ((name *)[CHClass(name) sharedInstance])
 #define CHIsClass(obj, name) [obj isKindOfClass:CHClass(name)]
@@ -112,44 +117,44 @@
 
 // For Replacement Functions
 #ifdef CHUseSubstrate
-#define CHMethod_(type, class_type, class_name, name, supercall, args...) \
+#define CHMethod_(return_type, class_type, class_name, name, supercall, args...) \
 	@class class_name; \
-	static type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args)
+	static return_type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args)
 #else
-#define CHMethod_(type, class_type, class_name, name, supercall, args...) \
+#define CHMethod_(return_type, class_type, class_name, name, supercall, args...) \
 	@class class_name; \
-	static type (*_ ## class_name ## _ ## name)(class_name *self, SEL _cmd, ##args); \
-	static type $$ ## class_name ## _ ## name(class_name *self, SEL _cmd, ##args) { \
-		typedef type (*supType)(id, SEL, ## args); \
+	static return_type (*_ ## class_name ## _ ## name)(class_name *self, SEL _cmd, ##args); \
+	static return_type $$ ## class_name ## _ ## name(class_name *self, SEL _cmd, ##args) { \
+		typedef return_type (*supType)(id, SEL, ## args); \
 		supType supFn = (supType)class_getMethodImplementation(CHSuperClass(class_name), _cmd); \
 		return supFn supercall; \
 	} \
-	static type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args)
+	static return_type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args)
 #endif
-#define CHMethod0(type, class_type, name) \
-	CHMethod_(type, class_type *, class_type, name, (self, _cmd))
-#define CHMethod1(type, class_type, name1, type1, arg1) \
-	CHMethod_(type, class_type *, class_type, name1 ## $, (self, _cmd, arg1), type1 arg1)
-#define CHMethod2(type, class_type, name1, type1, arg1, name2, type2, arg2) \
-	CHMethod_(type, class_type *, class_type, name1 ## $ ## name2 ## $, (self, _cmd, arg1, arg2), type1 arg1, type2 arg2)
-#define CHMethod3(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
-	CHMethod_(type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $, (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
-#define CHMethod4(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
-	CHMethod_(type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
-#define CHMethod5(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
-	CHMethod_(type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
-#define CHClassMethod0(type, class_type, name) \
-	CHMethod_(type, id, class_type, name, (self, _cmd))
-#define CHClassMethod1(type, class_type, name1, type1, arg1) \
-	CHMethod_(type, id, class_type, name1 ## $, (self, _cmd, arg1), type1 arg1)
-#define CHClassMethod2(type, class_type, name1, type1, arg1, name2, type2, arg2) \
-	CHMethod_(type, id, class_type, name1 ## $ ## name2 ## $, (self, _cmd, arg1, arg2), type1 arg1, type2 arg2)
-#define CHClassMethod3(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
-	CHMethod_(type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $, (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
-#define CHClassMethod4(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
-	CHMethod_(type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
-#define CHClassMethod5(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
-	CHMethod_(type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+#define CHMethod0(return_type, class_type, name) \
+	CHMethod_(return_type, class_type *, class_type, name, (self, _cmd))
+#define CHMethod1(return_type, class_type, name1, type1, arg1) \
+	CHMethod_(return_type, class_type *, class_type, name1 ## $, (self, _cmd, arg1), type1 arg1)
+#define CHMethod2(return_type, class_type, name1, type1, arg1, name2, type2, arg2) \
+	CHMethod_(return_type, class_type *, class_type, name1 ## $ ## name2 ## $, (self, _cmd, arg1, arg2), type1 arg1, type2 arg2)
+#define CHMethod3(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
+	CHMethod_(return_type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $, (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
+#define CHMethod4(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
+	CHMethod_(return_type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
+#define CHMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
+	CHMethod_(return_type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+#define CHClassMethod0(return_type, class_type, name) \
+	CHMethod_(return_type, id, class_type, name, (self, _cmd))
+#define CHClassMethod1(return_type, class_type, name1, type1, arg1) \
+	CHMethod_(return_type, id, class_type, name1 ## $, (self, _cmd, arg1), type1 arg1)
+#define CHClassMethod2(return_type, class_type, name1, type1, arg1, name2, type2, arg2) \
+	CHMethod_(return_type, id, class_type, name1 ## $ ## name2 ## $, (self, _cmd, arg1, arg2), type1 arg1, type2 arg2)
+#define CHClassMethod3(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
+	CHMethod_(return_type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $, (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
+#define CHClassMethod4(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
+	CHMethod_(return_type, id, SEL, type1, type2, type3, type4), id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
+#define CHClassMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
+	CHMethod_(return_type, id, SEL, type1, type2, type3, type5), id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
 		
 #define CHSuper(class_type, _cmd, name, args...) \
 	_ ## class_type ## _ ## name(self, _cmd, ##args)
