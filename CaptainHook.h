@@ -74,14 +74,14 @@ typedef struct CHClassDeclaration CHClassDeclaration;
 
 #ifdef CHUseSubstrate
 #import <substrate.h>
-#define CHHookImpl(className, impName, classVar, sel) ({ \
+#define CHHook_(className, impName, classVar, sel) ({ \
 	SEL selector = sel; \
 	MSHookMessageEx(classVar, selector, (IMP)&$ ## className ## _ ## impName, (IMP *)&_ ## className ## _ ## impName); \
 	if (!_ ## className ## _ ## impName) \
 		class_addMethod(classVar, selector, (IMP)&$ ## className ## _ ## impName, "@@:"); \
 })
 #else
-#define CHHookImpl(className, impName, classVal, sel) ({ \
+#define CHHook_(className, impName, classVal, sel) ({ \
 	Class classVar = classVal; \
 	if (classVar) { \
 		SEL selector = sel; \
@@ -99,21 +99,21 @@ typedef struct CHClassDeclaration CHClassDeclaration;
 })
 #endif
 
-#define CHHook(class, imp) CHHookImpl(class, imp, CHClass(class), CHSelFromImpName(imp))
-#define CHHook0(class, name) CHHookImpl(class, name, CHClass(class), @selector(name))
-#define CHHook1(class, name1) CHHookImpl(class, name1 ## $, CHClass(class), @selector(name1:))
-#define CHHook2(class, name1, name2) CHHookImpl(class, name1 ## $ ## name2 ## $, CHClass(class), @selector(name1:name2:))
-#define CHHook3(class, name1, name2, name3) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHClass(class), @selector(name1:name2:name3:))
-#define CHHook4(class, name1, name2, name3, name4) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHClass(class), @selector(name1:name2:name3:name4:))
-#define CHHook5(class, name1, name2, name3, name4, name5) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHClass(class), @selector(name1:name2:name3:name4:name5:))
+#define CHHook(class, imp) CHHook_(class, imp, CHClass(class), CHSelFromImpName(imp))
+#define CHHook0(class, name) CHHook_(class, name, CHClass(class), @selector(name))
+#define CHHook1(class, name1) CHHook_(class, name1 ## $, CHClass(class), @selector(name1:))
+#define CHHook2(class, name1, name2) CHHook_(class, name1 ## $ ## name2 ## $, CHClass(class), @selector(name1:name2:))
+#define CHHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHClass(class), @selector(name1:name2:name3:))
+#define CHHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHClass(class), @selector(name1:name2:name3:name4:))
+#define CHHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHClass(class), @selector(name1:name2:name3:name4:name5:))
 
-#define CHClassHook(class, imp) CHHookImpl(class, imp, CHMetaClass(class), CHSelFromImpName(imp))
-#define CHClassHook0(class, name) CHHookImpl(class, name, CHMetaClass(class), @selector(name))
-#define CHClassHook1(class, name1) CHHookImpl(class, name1 ## $, CHMetaClass(class), @selector(name1:))
-#define CHClassHook2(class, name1, name2) CHHookImpl(class, name1 ## $ ## name2 ## $, CHMetaClass(class), @selector(name1:name2:))
-#define CHClassHook3(class, name1, name2, name3) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHMetaClass(class), @selector(name1:name2:name3:))
-#define CHClassHook4(class, name1, name2, name3, name4) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:))
-#define CHClassHook5(class, name1, name2, name3, name4, name5) CHHookImpl(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:name5:))
+#define CHClassHook(class, imp) CHHook_(class, imp, CHMetaClass(class), CHSelFromImpName(imp))
+#define CHClassHook0(class, name) CHHook_(class, name, CHMetaClass(class), @selector(name))
+#define CHClassHook1(class, name1) CHHook_(class, name1 ## $, CHMetaClass(class), @selector(name1:))
+#define CHClassHook2(class, name1, name2) CHHook_(class, name1 ## $ ## name2 ## $, CHMetaClass(class), @selector(name1:name2:))
+#define CHClassHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHMetaClass(class), @selector(name1:name2:name3:))
+#define CHClassHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:))
+#define CHClassHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:name5:))
 
 // For Replacement Functions
 #ifdef CHUseSubstrate
@@ -156,20 +156,20 @@ typedef struct CHClassDeclaration CHClassDeclaration;
 #define CHClassMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
 	CHMethod_(return_type, id, SEL, type1, type2, type3, type5), id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
 		
-#define CHSuper(class_type, _cmd, name, args...) \
+#define CHSuper_(class_type, _cmd, name, args...) \
 	_ ## class_type ## _ ## name(self, _cmd, ##args)
 #define CHSuper0(class_type, name) \
-	CHSuper(class_type, @selector(name), name)
+	CHSuper_(class_type, @selector(name), name)
 #define CHSuper1(class_type, name1, val1) \
-	CHSuper(class_type, @selector(name1:), name1 ## $, val1)
+	CHSuper_(class_type, @selector(name1:), name1 ## $, val1)
 #define CHSuper2(class_type, name1, val1, name2, val2) \
-	CHSuper(class_type, @selector(name1:name2:), name1 ## $ ## name2 ## $, val1, val2)
+	CHSuper_(class_type, @selector(name1:name2:), name1 ## $ ## name2 ## $, val1, val2)
 #define CHSuper3(class_type, name1, val1, name2, val2, name3, val3) \
-	CHSuper(class_type, @selector(name1:name2:name3:), name1 ## $ ## name2 ## $ ## name3 ## $, val1, val2, val3)
+	CHSuper_(class_type, @selector(name1:name2:name3:), name1 ## $ ## name2 ## $ ## name3 ## $, val1, val2, val3)
 #define CHSuper4(class_type, name1, val1, name2, val2, name3, val3, name4, val4) \
-	CHSuper(class_type, @selector(name1:name2:name3:name4:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, val1, val2, val3, val4)
+	CHSuper_(class_type, @selector(name1:name2:name3:name4:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, val1, val2, val3, val4)
 #define CHSuper5(class_type, name1, val1, name2, val2, name3, val3, name4, val4, name5, val5) \
-	CHSuper(class_type, @selector(name1:name2:name3:name4:name5:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, val1, val2, val3, val4, val5)
+	CHSuper_(class_type, @selector(name1:name2:name3:name4:name5:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, val1, val2, val3, val4, val5)
 
 // Declarative-style
 
@@ -180,7 +180,7 @@ typedef struct CHClassDeclaration CHClassDeclaration;
 	static type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args); \
 	CHConstructor { \
 		CHLoadLateClass(class_name); \
-		CHHookImpl(class_name, name, CHClass(class_name), @selector(sel)); \
+		CHHook_(class_name, name, CHClass(class_name), @selector(sel)); \
 	} \
 	CHMethod_(type, class_type, class_name, name, supercall, ##args)
 #define CHDeclareMethod0(type, class_type, name) \
@@ -203,7 +203,7 @@ typedef struct CHClassDeclaration CHClassDeclaration;
 	static type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args); \
 	CHConstructor { \
 		CHLoadLateClass(class_name); \
-		CHHookImpl(class_name, name, object_getClass(CHClass(class_name)), @selector(sel)); \
+		CHHook_(class_name, name, object_getClass(CHClass(class_name)), @selector(sel)); \
 	} \
 	CHMethod_(type, class_type, class_name, name, supercall, ##args)
 #define CHDeclareClassMethod0(type, class_type, name) \
@@ -234,9 +234,11 @@ static void *CHIvar_(id object, const char *name)
 		return (void *)&((char *)object)[ivar_getOffset(ivar)];
 	return NULL;
 }
+#define CHIvarRef(object, name, type) \
+	((type *)CHIvar_(object, #name))
 #define CHIvar(object, name, type) \
-	(*(type*)CHIvar_(object, #name))
-	// Warning: Dereferences NULL if object is nil or name isn't found. To avoid this save &CHIvar(...) and test if != NULL
+	(*CHIvarRef(object, name, type))
+	// Warning: Dereferences NULL if object is nil or name isn't found. To avoid this save CHIvarRef(...) and test if != NULL
 
 // Scope Autorelease
 __attribute__((unused)) CHInline
@@ -270,7 +272,7 @@ static void CHScopeReleased(id sro)
 		uint64_t startTime;
 	};
 	__attribute__((unused)) CHInline
-	static void CHInline CHProfileCalculateDurationAndLog(struct CHProfileData *profileData)
+	static void CHInline CHProfileCalculateDurationAndLog_(struct CHProfileData *profileData)
 	{
 		uint64_t duration = mach_absolute_time() - profileData->startTime;
 		mach_timebase_info_data_t info;
@@ -279,7 +281,7 @@ static void CHScopeReleased(id sro)
 		CHLog(@"Profile time: %lldns; %@", duration, profileData->message);
 	}
 	#define CHProfileScopeWithString(string) \
-		struct CHProfileData _profileData __attribute__((cleanup(CHProfileCalculateDurationAndLog))) = ({ struct CHProfileData _tmp; _tmp.message = (string); _tmp.startTime = mach_absolute_time(); _tmp; })
+		struct CHProfileData _profileData __attribute__((cleanup(CHProfileCalculateDurationAndLog_))) = ({ struct CHProfileData _tmp; _tmp.message = (string); _tmp.startTime = mach_absolute_time(); _tmp; })
 #else
 	#define CHProfileScopeWithString(string) \
 		CHNothing()
