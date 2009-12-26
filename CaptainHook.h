@@ -7,6 +7,7 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <Foundation/NSObject.h>
+#import <Foundation/NSObjCRuntime.h>
 
 #ifndef CHAppName
 #define CHAppName "CaptainHook"
