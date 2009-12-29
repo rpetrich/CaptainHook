@@ -41,16 +41,16 @@
 
 // Retrieveing classes/testing against objects
 
-struct CHClassDeclaration {
-	id class;
-	id metaClass;
-	id superClass;
+struct CHClassDeclaration_ {
+	id class_;
+	id metaClass_;
+	id superClass_;
 };
-typedef struct CHClassDeclaration CHClassDeclaration;
+typedef struct CHClassDeclaration_ CHClassDeclaration_;
 
 #define CHDeclareClass(name) \
 	@class name; \
-	static CHClassDeclaration name ## $;
+	static CHClassDeclaration_ name ## $;
 	
 #define CHLoadLateClass(name) do { \
 	CHClass(name) = objc_getClass(#name); \
@@ -63,9 +63,9 @@ typedef struct CHClassDeclaration CHClassDeclaration;
 	CHSuperClass(name) = class_getSuperclass(CHClass(name)); \
 } while(0)
 
-#define CHClass(name) name ## $.class
-#define CHMetaClass(name) name ## $.metaClass
-#define CHSuperClass(name) name ## $.superClass
+#define CHClass(name) name ## $.class_
+#define CHMetaClass(name) name ## $.metaClass_
+#define CHSuperClass(name) name ## $.superClass_
 #define CHAlloc(name) ((name *)[CHClass(name) alloc])
 #define CHSharedInstance(name) ((name *)[CHClass(name) sharedInstance])
 #define CHIsClass(obj, name) [obj isKindOfClass:CHClass(name)]
