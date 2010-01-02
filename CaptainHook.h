@@ -107,96 +107,96 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 // Optimizer has fun with these; should be as quick as we can get without requiring consumers to put a constant type encoding in: "@@:"
 #define CHDeclareSig0_(return_type) \
 	const char *return_ = @encode(return_type); \
-	size_t return_len = strlen(return_); \
+	size_t return_len = __builtin_strlen(return_); \
 	char sig[return_len+2]; \
-	memcpy(sig, return_, return_len); \
+	__builtin_memcpy(sig, return_, return_len); \
 	sig[return_len] = _C_ID; \
 	sig[return_len+1] = _C_SEL; \
 	sig[return_len+2] = '\0';
 #define CHDeclareSig1_(return_type, type1) \
 	const char *return_ = @encode(return_type); \
-	size_t return_len = strlen(return_); \
+	size_t return_len = __builtin_strlen(return_); \
 	const char *type1_ = @encode(type1); \
-	size_t type1_len = strlen(type1_); \
+	size_t type1_len = __builtin_strlen(type1_); \
 	char sig[return_len+2+type1_len]; \
-	memcpy(sig, return_, return_len); \
+	__builtin_memcpy(sig, return_, return_len); \
 	sig[return_len] = _C_ID; \
 	sig[return_len+1] = _C_SEL; \
-	memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
 	sig[return_len+type1_len+2] = '\0';
 #define CHDeclareSig2_(return_type, type1, type2) \
 	const char *return_ = @encode(return_type); \
-	size_t return_len = strlen(return_); \
+	size_t return_len = __builtin_strlen(return_); \
 	const char *type1_ = @encode(type1); \
-	size_t type1_len = strlen(type1_); \
+	size_t type1_len = __builtin_strlen(type1_); \
 	const char *type2_ = @encode(type2); \
-	size_t type2_len = strlen(type2_); \
+	size_t type2_len = __builtin_strlen(type2_); \
 	char sig[return_len+2+type1_len+type2_len]; \
-	memcpy(sig, return_, return_len); \
+	__builtin_memcpy(sig, return_, return_len); \
 	sig[return_len] = _C_ID; \
 	sig[return_len+1] = _C_SEL; \
-	memcpy(&sig[return_len+2], type1_, type1_len); \
-	memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
 	sig[return_len+type1_len+type2_len+2] = '\0';
 #define CHDeclareSig3_(return_type, type1, type2, type3) \
 	const char *return_ = @encode(return_type); \
-	size_t return_len = strlen(return_); \
+	size_t return_len = __builtin_strlen(return_); \
 	const char *type1_ = @encode(type1); \
-	size_t type1_len = strlen(type1_); \
+	size_t type1_len = __builtin_strlen(type1_); \
 	const char *type2_ = @encode(type2); \
-	size_t type2_len = strlen(type2_); \
+	size_t type2_len = __builtin_strlen(type2_); \
 	const char *type3_ = @encode(type3); \
-	size_t type3_len = strlen(type3_); \
+	size_t type3_len = __builtin_strlen(type3_); \
 	char sig[return_len+2+type1_len+type2_len+type3_len]; \
-	memcpy(sig, return_, return_len); \
+	__builtin_memcpy(sig, return_, return_len); \
 	sig[return_len] = _C_ID; \
 	sig[return_len+1] = _C_SEL; \
-	memcpy(&sig[return_len+2], type1_, type1_len); \
-	memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
-	memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
 	sig[return_len+type1_len+type2_len+type3_len+2] = '\0';
 #define CHDeclareSig4_(return_type, type1, type2, type3, type4) \
 	const char *return_ = @encode(return_type); \
-	size_t return_len = strlen(return_); \
+	size_t return_len = __builtin_strlen(return_); \
 	const char *type1_ = @encode(type1); \
-	size_t type1_len = strlen(type1_); \
+	size_t type1_len = __builtin_strlen(type1_); \
 	const char *type2_ = @encode(type2); \
-	size_t type2_len = strlen(type2_); \
+	size_t type2_len = __builtin_strlen(type2_); \
 	const char *type3_ = @encode(type3); \
-	size_t type3_len = strlen(type3_); \
+	size_t type3_len = __builtin_strlen(type3_); \
 	const char *type4_ = @encode(type4); \
-	size_t type4_len = strlen(type4_); \
+	size_t type4_len = __builtin_strlen(type4_); \
 	char sig[return_len+2+type1_len+type2_len+type3_len+type4_len]; \
-	memcpy(sig, return_, return_len); \
+	__builtin_memcpy(sig, return_, return_len); \
 	sig[return_len] = _C_ID; \
 	sig[return_len+1] = _C_SEL; \
-	memcpy(&sig[return_len+2], type1_, type1_len); \
-	memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
-	memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
-	memcpy(&sig[return_len+2+type1_len+type2_len+type3_len], type4_, type4_len); \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len], type4_, type4_len); \
 	sig[return_len+type1_len+type2_len+type3_len+type4_len+2] = '\0';
 #define CHDeclareSig5_(return_type, type1, type2, type3, type4, type5) \
 	const char *return_ = @encode(return_type); \
-	size_t return_len = strlen(return_); \
+	size_t return_len = __builtin_strlen(return_); \
 	const char *type1_ = @encode(type1); \
-	size_t type1_len = strlen(type1_); \
+	size_t type1_len = __builtin_strlen(type1_); \
 	const char *type2_ = @encode(type2); \
-	size_t type2_len = strlen(type2_); \
+	size_t type2_len = __builtin_strlen(type2_); \
 	const char *type3_ = @encode(type3); \
-	size_t type3_len = strlen(type3_); \
+	size_t type3_len = __builtin_strlen(type3_); \
 	const char *type4_ = @encode(type4); \
-	size_t type4_len = strlen(type4_); \
+	size_t type4_len = __builtin_strlen(type4_); \
 	const char *type5_ = @encode(type5); \
-	size_t type5_len = strlen(type5_); \
+	size_t type5_len = __builtin_strlen(type5_); \
 	char sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len]; \
-	memcpy(sig, return_, return_len); \
+	__builtin_memcpy(sig, return_, return_len); \
 	sig[return_len] = _C_ID; \
 	sig[return_len+1] = _C_SEL; \
-	memcpy(&sig[return_len+2], type1_, type1_len); \
-	memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
-	memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
-	memcpy(&sig[return_len+2+type1_len+type2_len+type3_len], type4_, type4_len); \
-	memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len], type5_, type5_len); \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len], type4_, type4_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len], type5_, type5_len); \
 	sig[return_len+type1_len+type2_len+type3_len+type4_len+type5_len+2] = '\0';
 	
 #define CHDeclareDummySig_() const char *sig = "@@:";
