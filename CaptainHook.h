@@ -97,7 +97,6 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 			} \
 		} else { \
 			sigdef; \
-			NSLog(@"CaptainHook " #className " " #impName " %s", sig); \
 			class_addMethod(classVar, selector, (IMP)&$ ## className ## _ ## impName, sig); \
 		} \
 	} \
