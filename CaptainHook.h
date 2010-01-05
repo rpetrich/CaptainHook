@@ -75,14 +75,16 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 
 #ifdef CHUseSubstrate
 #import <substrate.h>
-#define CHHook_(className, impName, classVar, sel) ({ \
+#define CHHook_(className, impName, classVar, sel, sigdef) ({ \
 	SEL selector = sel; \
 	MSHookMessageEx(classVar, selector, (IMP)&$ ## className ## _ ## impName, (IMP *)&_ ## className ## _ ## impName); \
-	if (!_ ## className ## _ ## impName) \
-		class_addMethod(classVar, selector, (IMP)&$ ## className ## _ ## impName, "@@:"); \
+	if (!_ ## className ## _ ## impName) { \
+		sigdef; \
+		class_addMethod(classVar, selector, (IMP)&$ ## className ## _ ## impName, sig); \
+	} \
 })
 #else
-#define CHHook_(className, impName, classVal, sel) ({ \
+#define CHHook_(className, impName, classVal, sel, sigdef) ({ \
 	Class classVar = classVal; \
 	if (classVar) { \
 		SEL selector = sel; \
@@ -94,27 +96,139 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 				method_setImplementation(method, (IMP)&$ ## className ## _ ## impName); \
 			} \
 		} else { \
-			class_addMethod(classVar, selector, (IMP)&$ ## className ## _ ## impName, "@@:"); \
+			sigdef; \
+			class_addMethod(classVar, selector, (IMP)&$ ## className ## _ ## impName, sig); \
 		} \
 	} \
 })
 #endif
 
-#define CHHook(class, imp) CHHook_(class, imp, CHClass(class), CHSelFromImpName(imp))
-#define CHHook0(class, name) CHHook_(class, name, CHClass(class), @selector(name))
-#define CHHook1(class, name1) CHHook_(class, name1 ## $, CHClass(class), @selector(name1:))
-#define CHHook2(class, name1, name2) CHHook_(class, name1 ## $ ## name2 ## $, CHClass(class), @selector(name1:name2:))
-#define CHHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHClass(class), @selector(name1:name2:name3:))
-#define CHHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHClass(class), @selector(name1:name2:name3:name4:))
-#define CHHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHClass(class), @selector(name1:name2:name3:name4:name5:))
+// Optimizer has fun with these; should be as quick as we can get without requiring consumers to put a constant type encoding in: "@@:"
+#define CHDeclareSig0_(return_type) \
+	const char *return_ = @encode(return_type); \
+	size_t return_len = __builtin_strlen(return_); \
+	char sig[return_len+2]; \
+	__builtin_memcpy(sig, return_, return_len); \
+	sig[return_len] = _C_ID; \
+	sig[return_len+1] = _C_SEL; \
+	sig[return_len+2] = '\0';
+#define CHDeclareSig1_(return_type, type1) \
+	const char *return_ = @encode(return_type); \
+	size_t return_len = __builtin_strlen(return_); \
+	const char *type1_ = @encode(type1); \
+	size_t type1_len = __builtin_strlen(type1_); \
+	char sig[return_len+2+type1_len]; \
+	__builtin_memcpy(sig, return_, return_len); \
+	sig[return_len] = _C_ID; \
+	sig[return_len+1] = _C_SEL; \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	sig[return_len+type1_len+2] = '\0';
+#define CHDeclareSig2_(return_type, type1, type2) \
+	const char *return_ = @encode(return_type); \
+	size_t return_len = __builtin_strlen(return_); \
+	const char *type1_ = @encode(type1); \
+	size_t type1_len = __builtin_strlen(type1_); \
+	const char *type2_ = @encode(type2); \
+	size_t type2_len = __builtin_strlen(type2_); \
+	char sig[return_len+2+type1_len+type2_len]; \
+	__builtin_memcpy(sig, return_, return_len); \
+	sig[return_len] = _C_ID; \
+	sig[return_len+1] = _C_SEL; \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
+	sig[return_len+type1_len+type2_len+2] = '\0';
+#define CHDeclareSig3_(return_type, type1, type2, type3) \
+	const char *return_ = @encode(return_type); \
+	size_t return_len = __builtin_strlen(return_); \
+	const char *type1_ = @encode(type1); \
+	size_t type1_len = __builtin_strlen(type1_); \
+	const char *type2_ = @encode(type2); \
+	size_t type2_len = __builtin_strlen(type2_); \
+	const char *type3_ = @encode(type3); \
+	size_t type3_len = __builtin_strlen(type3_); \
+	char sig[return_len+2+type1_len+type2_len+type3_len]; \
+	__builtin_memcpy(sig, return_, return_len); \
+	sig[return_len] = _C_ID; \
+	sig[return_len+1] = _C_SEL; \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
+	sig[return_len+type1_len+type2_len+type3_len+2] = '\0';
+#define CHDeclareSig4_(return_type, type1, type2, type3, type4) \
+	const char *return_ = @encode(return_type); \
+	size_t return_len = __builtin_strlen(return_); \
+	const char *type1_ = @encode(type1); \
+	size_t type1_len = __builtin_strlen(type1_); \
+	const char *type2_ = @encode(type2); \
+	size_t type2_len = __builtin_strlen(type2_); \
+	const char *type3_ = @encode(type3); \
+	size_t type3_len = __builtin_strlen(type3_); \
+	const char *type4_ = @encode(type4); \
+	size_t type4_len = __builtin_strlen(type4_); \
+	char sig[return_len+2+type1_len+type2_len+type3_len+type4_len]; \
+	__builtin_memcpy(sig, return_, return_len); \
+	sig[return_len] = _C_ID; \
+	sig[return_len+1] = _C_SEL; \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len], type4_, type4_len); \
+	sig[return_len+type1_len+type2_len+type3_len+type4_len+2] = '\0';
+#define CHDeclareSig5_(return_type, type1, type2, type3, type4, type5) \
+	const char *return_ = @encode(return_type); \
+	size_t return_len = __builtin_strlen(return_); \
+	const char *type1_ = @encode(type1); \
+	size_t type1_len = __builtin_strlen(type1_); \
+	const char *type2_ = @encode(type2); \
+	size_t type2_len = __builtin_strlen(type2_); \
+	const char *type3_ = @encode(type3); \
+	size_t type3_len = __builtin_strlen(type3_); \
+	const char *type4_ = @encode(type4); \
+	size_t type4_len = __builtin_strlen(type4_); \
+	const char *type5_ = @encode(type5); \
+	size_t type5_len = __builtin_strlen(type5_); \
+	char sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len]; \
+	__builtin_memcpy(sig, return_, return_len); \
+	sig[return_len] = _C_ID; \
+	sig[return_len+1] = _C_SEL; \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len], type4_, type4_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len], type5_, type5_len); \
+	sig[return_len+type1_len+type2_len+type3_len+type4_len+type5_len+2] = '\0';
+	
+#define CHDeclareDummySig_() const char *sig = "@@:";
 
-#define CHClassHook(class, imp) CHHook_(class, imp, CHMetaClass(class), CHSelFromImpName(imp))
-#define CHClassHook0(class, name) CHHook_(class, name, CHMetaClass(class), @selector(name))
-#define CHClassHook1(class, name1) CHHook_(class, name1 ## $, CHMetaClass(class), @selector(name1:))
-#define CHClassHook2(class, name1, name2) CHHook_(class, name1 ## $ ## name2 ## $, CHMetaClass(class), @selector(name1:name2:))
-#define CHClassHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHMetaClass(class), @selector(name1:name2:name3:))
-#define CHClassHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:))
-#define CHClassHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:name5:))
+#define CHHook(class, imp) CHHook_(class, imp, CHClass(class), CHSelFromImpName(imp), CHDeclareDummySig_())
+#define CHHook0(class, name) CHHook_(class, name, CHClass(class), @selector(name), CHDeclareDummySig_())
+#define CHHook1(class, name1) CHHook_(class, name1 ## $, CHClass(class), @selector(name1:), CHDeclareDummySig_())
+#define CHHook2(class, name1, name2) CHHook_(class, name1 ## $ ## name2 ## $, CHClass(class), @selector(name1:name2:), CHDeclareDummySig_())
+#define CHHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHClass(class), @selector(name1:name2:name3:), CHDeclareDummySig_())
+#define CHHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHClass(class), @selector(name1:name2:name3:name4:), CHDeclareDummySig_())
+#define CHHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHClass(class), @selector(name1:name2:name3:name4:name5:), CHDeclareDummySig_())
+
+#define CHAddHook0(return_type, class, name) CHHook_(class, name, CHClass(class), @selector(name), CHDeclareSig0_(return_type))
+#define CHAddHook1(return_type, class, name1, type1) CHHook_(class, name1 ## $, CHClass(class), @selector(name1:), CHDeclareSig1_(return_type, type1))
+#define CHAddHook2(return_type, class, name1, type1, name2, type2) CHHook_(class, name1 ## $ ## name2 ## $, CHClass(class), @selector(name1:name2:), CHDeclareSig2_(return_type, type1, type2))
+#define CHAddHook3(return_type, class, name1, type1, name2, type2, name3, type3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHClass(class), @selector(name1:name2:name3:), CHDeclareSig3_(return_type, type1, type2, type3))
+#define CHAddHook4(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHClass(class), @selector(name1:name2:name3:name4:), CHDeclareSig4_(return_type, type1, type2, type3, type4))
+#define CHAddHook5(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4, name5, type5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHClass(class), @selector(name1:name2:name3:name4:name5:), CHDeclareSig5_(return_type, type1, type2, type3, type4, type5))
+
+#define CHClassHook(class, imp) CHHook_(class, imp, CHMetaClass(class), CHSelFromImpName(imp), CHDeclareDummySig_())
+#define CHClassHook0(class, name) CHHook_(class, name, CHMetaClass(class), @selector(name), CHDeclareDummySig_())
+#define CHClassHook1(class, name1) CHHook_(class, name1 ## $, CHMetaClass(class), @selector(name1:), CHDeclareDummySig_())
+#define CHClassHook2(class, name1, name2) CHHook_(class, name1 ## $ ## name2 ## $, CHMetaClass(class), @selector(name1:name2:), CHDeclareDummySig_())
+#define CHClassHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHMetaClass(class), @selector(name1:name2:name3:), CHDeclareDummySig_())
+#define CHClassHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:), CHDeclareDummySig_())
+#define CHClassHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:name5:), CHDeclareDummySig_())
+
+#define CHAddClassHook0(return_type, class, name) CHHook_(class, name, CHMetaClass(class), @selector(name), CHDeclareSig0_(return_type))
+#define CHAddClassHook1(return_type, class, name1, type1) CHHook_(class, name1 ## $, CHMetaClass(class), @selector(name1:), CHDeclareSig1_(return_type, type1))
+#define CHAddClassHook2(return_type, class, name1, type1, name2, type2) CHHook_(class, name1 ## $ ## name2 ## $, CHMetaClass(class), @selector(name1:name2:), CHDeclareSig2_(return_type, type1, type2))
+#define CHAddClassHook3(return_type, class, name1, type1, name2, type2, name3, type3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHMetaClass(class), @selector(name1:name2:name3:), CHDeclareSig3_(return_type, type1, type2, type3))
+#define CHAddClassHook4(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:), CHDeclareSig4_(return_type, type1, type2, type3, type4))
+#define CHAddClassHook5(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4, name5, type5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:name5:), CHDeclareSig5_(return_type, type1, type2, type3, type4, type5))
 
 // For Replacement Functions
 #ifdef CHUseSubstrate
@@ -153,9 +267,9 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 #define CHClassMethod3(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
 	CHMethod_(return_type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $, (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
 #define CHClassMethod4(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
-	CHMethod_(return_type, id, SEL, type1, type2, type3, type4), id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
+	CHMethod_(return_type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
 #define CHClassMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
-	CHMethod_(return_type, id, SEL, type1, type2, type3, type5), id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+	CHMethod_(return_type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
 		
 #define CHSuper_(class_type, _cmd, name, args...) \
 	_ ## class_type ## _ ## name(self, _cmd, ##args)
