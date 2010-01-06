@@ -210,6 +210,8 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	} \
 	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
 #endif
+#define CHMethod(count, args...) \
+	CHMethod ## count(args)
 #define CHMethod0(return_type, class_type, name) \
 	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), name, name, CHDeclareSig0_(return_type), (self, _cmd))
 #define CHMethod1(return_type, class_type, name1, type1, arg1) \
@@ -222,6 +224,8 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), name1(self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
 #define CHMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
 	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+#define CHClassMethod(count, args...) \
+	CHClassMethod ## count(args)
 #define CHClassMethod0(return_type, class_type, name) \
 	CHMethod_(return_type, Id, class_type, CHMetaClass(class_type), name, name, CHDeclareSig0_(return_type), (self, _cmd))
 #define CHClassMethod1(return_type, class_type, name1, type1, arg1) \
@@ -238,14 +242,14 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 // Replacement Method Registration
 #define CHHook_(class_name, name) \
 	$ ## class_name ## _ ## name ## _register()
-#define CHHook(class, imp) CHHook_(class, imp)
+#define CHHook(count, args...) CHHook ## count(args)
 #define CHHook0(class, name) CHHook_(class, name)
 #define CHHook1(class, name1) CHHook_(class, name1 ## $)
 #define CHHook2(class, name1, name2) CHHook_(class, name1 ## $ ## name2 ## $)
 #define CHHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $)
 #define CHHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $)
 #define CHHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $)
-#define CHClassHook(class, imp) CHHook_(class, imp)
+#define CHClassHook(count, args...) CHClassHook ## count(args)
 #define CHClassHook0(class, name) CHHook_(class, name)
 #define CHClassHook1(class, name1) CHHook_(class, name1 ## $)
 #define CHClassHook2(class, name1, name2) CHHook_(class, name1 ## $ ## name2 ## $)
@@ -254,12 +258,14 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 #define CHClassHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $)
 
 // New Method Registration (deprecated; no longer required)
+#define CHAddHook(count, args...) CHAddHook ## count(args)
 #define CHAddHook0(return_type, class, name) CHHook_(class, imp)
 #define CHAddHook1(return_type, class, name1, type1) CHHook_(class, name1 ## $)
 #define CHAddHook2(return_type, class, name1, type1, name2, type2) CHHook_(class, name1 ## $ ## name2 ## $)
 #define CHAddHook3(return_type, class, name1, type1, name2, type2, name3, type3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $)
 #define CHAddHook4(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $)
 #define CHAddHook5(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4, name5, type5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $)
+#define CHAddClassHook(count, args...) CAddClassHHook ## count(args)
 #define CHAddClassHook0(return_type, class, name) CHHook_(class, name)
 #define CHAddClassHook1(return_type, class, name1, type1) CHHook_(class, name1 ## $)
 #define CHAddClassHook2(return_type, class, name1, type1, name2, type2) CHHook_(class, name1 ## $ ## name2 ## $)
@@ -276,6 +282,8 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 		$ ## class_name ## _ ## name ## _register(); \
 	} \
 	CHMethod_(return_type, class_type, class_name, class_val, name, sel, sigdef, supercall, args...)
+#define CHDeclareMethod(count, args...) \
+	CHDeclareMethod ## count(args)
 #define CHDeclareMethod0(return_type, class_type, name) \
 	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), name, name, CHDeclareSig0_(return_type), (self, _cmd))
 #define CHDeclareMethod1(return_type, class_type, name1, type1, arg1) \
@@ -288,6 +296,8 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), name1(self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
 #define CHDeclareMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
 	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+#define CHDeclareClassMethod(count, args...) \
+	CHDeclareClassMethod ## count(args)
 #define CHDeclareClassMethod0(return_type, class_type, name) \
 	CHDeclareMethod_(return_type, Id, class_type, CHMetaClass(class_type), name, name, CHDeclareSig0_(return_type), (self, _cmd))
 #define CHDeclareClassMethod1(return_type, class_type, name1, type1, arg1) \
@@ -304,6 +314,8 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 // Calling super class (or the old method as the case may be)
 #define CHSuper_(class_type, _cmd, name, args...) \
 	$ ## class_type ## _ ## name ## _super(self, _cmd, ##args)
+#define CHSuper(count, args...) \
+	CHSuper ## count(args)
 #define CHSuper0(class_type, name) \
 	CHSuper_(class_type, @selector(name), name)
 #define CHSuper1(class_type, name1, val1) \
