@@ -270,7 +270,8 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 // Declarative style methods (automatically calls CHHook)
 #define CHDeclareMethod_(return_type, class_type, class_name, class_val, name, sel, sigdef, supercall, args...) \
 	static inline void $ ## class_name ## _ ## name ## _register(); \
-	CHConstructor { \
+	__attribute__((constructor)) \
+	static inline void $ ## class_name ## _ ## name ## _constructor() { \
 		CHLoadLateClass(class_name); \
 		$ ## class_name ## _ ## name ## _register(); \
 	} \
