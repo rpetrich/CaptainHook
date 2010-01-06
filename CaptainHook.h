@@ -39,19 +39,18 @@
 #define CHConstructor static __attribute__((constructor)) void CHConcat(CHConstructor, __LINE__)()
 #define CHInline inline __attribute__((always_inline))
 
-// Retrieveing classes/testing against objects
-
+// Cached Class Declaration (allows hooking methods, and fast lookup of classes)
 struct CHClassDeclaration_ {
 	id class_;
 	id metaClass_;
 	id superClass_;
 };
 typedef struct CHClassDeclaration_ CHClassDeclaration_;
-
 #define CHDeclareClass(name) \
 	@class name; \
 	static CHClassDeclaration_ name ## $;
-	
+
+// Loading Cached Classes (use CHLoadClass when class is linkable, CHLoadLateClass when it isn't)
 #define CHLoadLateClass(name) do { \
 	CHClass(name) = objc_getClass(#name); \
 	CHMetaClass(name) = object_getClass(CHClass(name)); \
@@ -63,6 +62,7 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	CHSuperClass(name) = class_getSuperclass(CHClass(name)); \
 } while(0)
 
+// Quick Lookup of cached classes, and common methods on them
 #define CHClass(name) name ## $.class_
 #define CHMetaClass(name) name ## $.metaClass_
 #define CHSuperClass(name) name ## $.superClass_
@@ -71,39 +71,7 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 #define CHIsClass(obj, name) [obj isKindOfClass:CHClass(name)]
 #define CHRespondsTo(obj, sel) [obj respondsToSelector:@selector(sel)]
 
-// To Load classes for hooking
-
-#ifdef CHUseSubstrate
-#import <substrate.h>
-#define CHHook_(className, impName, classVar, sel, sigdef) ({ \
-	SEL selector = sel; \
-	MSHookMessageEx(classVar, selector, (IMP)&$ ## className ## _ ## impName, (IMP *)&_ ## className ## _ ## impName); \
-	if (!_ ## className ## _ ## impName) { \
-		sigdef; \
-		class_addMethod(classVar, selector, (IMP)&$ ## className ## _ ## impName, sig); \
-	} \
-})
-#else
-#define CHHook_(className, impName, classVal, sel, sigdef) ({ \
-	Class classVar = classVal; \
-	if (classVar) { \
-		SEL selector = sel; \
-		Method method = class_getInstanceMethod(classVar, selector); \
-		if (method) { \
-			_ ## className ## _ ## impName = &$$ ## className ## _ ## impName; \
-			if (!class_addMethod(classVar, selector, (IMP)&$ ## className ## _ ## impName, method_getTypeEncoding(method))) { \
-				_ ## className ## _ ## impName = (__typeof__(_ ## className ## _ ## impName))method_getImplementation(method); \
-				method_setImplementation(method, (IMP)&$ ## className ## _ ## impName); \
-			} \
-		} else { \
-			sigdef; \
-			class_addMethod(classVar, selector, (IMP)&$ ## className ## _ ## impName, sig); \
-		} \
-	} \
-})
-#endif
-
-// Optimizer has fun with these; should be as quick as we can get without requiring consumers to put a constant type encoding in: "@@:"
+// Replacement Method Definition
 #define CHDeclareSig0_(return_type) \
 	const char *return_ = @encode(return_type); \
 	size_t return_len = __builtin_strlen(return_); \
@@ -198,81 +166,144 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len], type5_, type5_len); \
 	sig[return_len+type1_len+type2_len+type3_len+type4_len+type5_len+2] = '\0';
 	
-#define CHDeclareDummySig_() const char *sig = "@@:";
-
-#define CHHook(class, imp) CHHook_(class, imp, CHClass(class), CHSelFromImpName(imp), CHDeclareDummySig_())
-#define CHHook0(class, name) CHHook_(class, name, CHClass(class), @selector(name), CHDeclareDummySig_())
-#define CHHook1(class, name1) CHHook_(class, name1 ## $, CHClass(class), @selector(name1:), CHDeclareDummySig_())
-#define CHHook2(class, name1, name2) CHHook_(class, name1 ## $ ## name2 ## $, CHClass(class), @selector(name1:name2:), CHDeclareDummySig_())
-#define CHHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHClass(class), @selector(name1:name2:name3:), CHDeclareDummySig_())
-#define CHHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHClass(class), @selector(name1:name2:name3:name4:), CHDeclareDummySig_())
-#define CHHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHClass(class), @selector(name1:name2:name3:name4:name5:), CHDeclareDummySig_())
-
-#define CHAddHook0(return_type, class, name) CHHook_(class, name, CHClass(class), @selector(name), CHDeclareSig0_(return_type))
-#define CHAddHook1(return_type, class, name1, type1) CHHook_(class, name1 ## $, CHClass(class), @selector(name1:), CHDeclareSig1_(return_type, type1))
-#define CHAddHook2(return_type, class, name1, type1, name2, type2) CHHook_(class, name1 ## $ ## name2 ## $, CHClass(class), @selector(name1:name2:), CHDeclareSig2_(return_type, type1, type2))
-#define CHAddHook3(return_type, class, name1, type1, name2, type2, name3, type3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHClass(class), @selector(name1:name2:name3:), CHDeclareSig3_(return_type, type1, type2, type3))
-#define CHAddHook4(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHClass(class), @selector(name1:name2:name3:name4:), CHDeclareSig4_(return_type, type1, type2, type3, type4))
-#define CHAddHook5(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4, name5, type5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHClass(class), @selector(name1:name2:name3:name4:name5:), CHDeclareSig5_(return_type, type1, type2, type3, type4, type5))
-
-#define CHClassHook(class, imp) CHHook_(class, imp, CHMetaClass(class), CHSelFromImpName(imp), CHDeclareDummySig_())
-#define CHClassHook0(class, name) CHHook_(class, name, CHMetaClass(class), @selector(name), CHDeclareDummySig_())
-#define CHClassHook1(class, name1) CHHook_(class, name1 ## $, CHMetaClass(class), @selector(name1:), CHDeclareDummySig_())
-#define CHClassHook2(class, name1, name2) CHHook_(class, name1 ## $ ## name2 ## $, CHMetaClass(class), @selector(name1:name2:), CHDeclareDummySig_())
-#define CHClassHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHMetaClass(class), @selector(name1:name2:name3:), CHDeclareDummySig_())
-#define CHClassHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:), CHDeclareDummySig_())
-#define CHClassHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:name5:), CHDeclareDummySig_())
-
-#define CHAddClassHook0(return_type, class, name) CHHook_(class, name, CHMetaClass(class), @selector(name), CHDeclareSig0_(return_type))
-#define CHAddClassHook1(return_type, class, name1, type1) CHHook_(class, name1 ## $, CHMetaClass(class), @selector(name1:), CHDeclareSig1_(return_type, type1))
-#define CHAddClassHook2(return_type, class, name1, type1, name2, type2) CHHook_(class, name1 ## $ ## name2 ## $, CHMetaClass(class), @selector(name1:name2:), CHDeclareSig2_(return_type, type1, type2))
-#define CHAddClassHook3(return_type, class, name1, type1, name2, type2, name3, type3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $, CHMetaClass(class), @selector(name1:name2:name3:), CHDeclareSig3_(return_type, type1, type2, type3))
-#define CHAddClassHook4(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:), CHDeclareSig4_(return_type, type1, type2, type3, type4))
-#define CHAddClassHook5(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4, name5, type5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, CHMetaClass(class), @selector(name1:name2:name3:name4:name5:), CHDeclareSig5_(return_type, type1, type2, type3, type4, type5))
-
-// For Replacement Functions
 #ifdef CHUseSubstrate
-#define CHMethod_(return_type, class_type, class_name, name, supercall, args...) \
-	@class class_name; \
-	static return_type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args)
+#import <substrate.h>
+#define CHMethod_(return_type, class_type, class_name, class_val, name, sel, sigdef, supercall, args...) \
+	static return_type (*$ ## class_name ## _ ## name ## _super)(class_type self, SEL _cmd, ##args); \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args); \
+	__attribute__((always_inline)) \
+	static inline void $ ## class_name ## _ ## name ## _register() { \
+		if (class_val) { \
+			MSHookMessageEx(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, (IMP *)&$ ## class_name ## _ ## name ## _super); \
+			if (!$ ## class_name ## _ ## name ## _super) { \
+				sigdef; \
+				class_addMethod(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, sig); \
+			} \
+		} \
+	} \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
 #else
-#define CHMethod_(return_type, class_type, class_name, name, supercall, args...) \
-	@class class_name; \
-	static return_type (*_ ## class_name ## _ ## name)(class_name *self, SEL _cmd, ##args); \
-	static return_type $$ ## class_name ## _ ## name(class_name *self, SEL _cmd, ##args) { \
-		typedef return_type (*supType)(id, SEL, ## args); \
+#define CHMethod_(return_type, class_type, class_name, class_val, name, sel, sigdef, supercall, args...) \
+	static return_type (*$ ## class_name ## _ ## name ## _super)(class_type self, SEL _cmd, ##args); \
+	static return_type $ ## class_name ## _ ## name ## _closure(class_type self, SEL _cmd, ##args) { \
+		typedef return_type (*supType)(class_type, SEL, ## args); \
 		supType supFn = (supType)class_getMethodImplementation(CHSuperClass(class_name), _cmd); \
 		return supFn supercall; \
 	} \
-	static return_type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args)
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args); \
+	__attribute__((always_inline)) \
+	static inline void $ ## class_name ## _ ## name ## _register() { \
+		if (class_val) { \
+			Method method = class_getInstanceMethod(class_val, @selector(sel)); \
+			if (method) { \
+				$ ## class_name ## _ ## name ## _super = (__typeof__($ ## class_name ## _ ## name ## _super))method_getImplementation(method); \
+				if (class_addMethod(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, method_getTypeEncoding(method))) { \
+					$ ## class_name ## _ ## name ## _super = &$ ## class_name ## _ ## name ## _closure; \
+				} else { \
+					method_setImplementation(method, (IMP)&$ ## class_name ## _ ## name ## _method); \
+				} \
+			} else { \
+				sigdef; \
+				class_addMethod(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, sig); \
+			} \
+		} \
+	} \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
 #endif
 #define CHMethod0(return_type, class_type, name) \
-	CHMethod_(return_type, class_type *, class_type, name, (self, _cmd))
+	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), name, name, CHDeclareSig0_(return_type), (self, _cmd))
 #define CHMethod1(return_type, class_type, name1, type1, arg1) \
-	CHMethod_(return_type, class_type *, class_type, name1 ## $, (self, _cmd, arg1), type1 arg1)
+	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $, name1:, CHDeclareSig1_(return_type, type1), (self, _cmd, arg1), type1 arg1)
 #define CHMethod2(return_type, class_type, name1, type1, arg1, name2, type2, arg2) \
-	CHMethod_(return_type, class_type *, class_type, name1 ## $ ## name2 ## $, (self, _cmd, arg1, arg2), type1 arg1, type2 arg2)
+	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $ ## name2 ## $, name1:name2:, CHDeclareSig2_(return_type, type1, type2), (self, _cmd, arg1, arg2), type1 arg1, type2 arg2)
 #define CHMethod3(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
-	CHMethod_(return_type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $, (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
+	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $, name1:name2:name3:, CHDeclareSig3_(return_type, type1, type2, type3), (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
 #define CHMethod4(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
-	CHMethod_(return_type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
+	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), name1(self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
 #define CHMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
-	CHMethod_(return_type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
 #define CHClassMethod0(return_type, class_type, name) \
-	CHMethod_(return_type, id, class_type, name, (self, _cmd))
+	CHMethod_(return_type, Id, class_type, CHMetaClass(class_type), name, name, CHDeclareSig0_(return_type), (self, _cmd))
 #define CHClassMethod1(return_type, class_type, name1, type1, arg1) \
-	CHMethod_(return_type, id, class_type, name1 ## $, (self, _cmd, arg1), type1 arg1)
+	CHMethod_(return_type, Id, class_type, CHMetaClass(class_type), name1 ## $, name1:, CHDeclareSig1_(return_type, type1), (self, _cmd, arg1), type1 arg1)
 #define CHClassMethod2(return_type, class_type, name1, type1, arg1, name2, type2, arg2) \
-	CHMethod_(return_type, id, class_type, name1 ## $ ## name2 ## $, (self, _cmd, arg1, arg2), type1 arg1, type2 arg2)
+	CHMethod_(return_type, Id, class_type, CHMetaClass(class_type), name1 ## $ ## name2 ## $, name1:name2:, CHDeclareSig2_(return_type, type1, type2), (self, _cmd, arg1, arg2), type1 arg1, type2 arg2)
 #define CHClassMethod3(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
-	CHMethod_(return_type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $, (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
+	CHMethod_(return_type, Id, class_type, CHMetaClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $, name1:name2:name3:, CHDeclareSig3_(return_type, type1, type2, type3), (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
 #define CHClassMethod4(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
-	CHMethod_(return_type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
+	CHMethod_(return_type, Id, class_type, CHMetaClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
 #define CHClassMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
-	CHMethod_(return_type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
-		
+	CHMethod_(return_type, Id, class_type, CHMetaClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+
+// Replacement Method Registration
+#define CHHook_(class_name, name) \
+	$ ## class_name ## _ ## name ## _register()
+#define CHHook(class, imp) CHHook_(class, imp)
+#define CHHook0(class, name) CHHook_(class, name)
+#define CHHook1(class, name1) CHHook_(class, name1 ## $)
+#define CHHook2(class, name1, name2) CHHook_(class, name1 ## $ ## name2 ## $)
+#define CHHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $)
+#define CHHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $)
+#define CHHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $)
+#define CHClassHook(class, imp) CHHook_(class, imp)
+#define CHClassHook0(class, name) CHHook_(class, name)
+#define CHClassHook1(class, name1) CHHook_(class, name1 ## $)
+#define CHClassHook2(class, name1, name2) CHHook_(class, name1 ## $ ## name2 ## $)
+#define CHClassHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $)
+#define CHClassHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $)
+#define CHClassHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $)
+
+// New Method Registration (deprecated; no longer required)
+#define CHAddHook0(return_type, class, name) CHHook_(class, imp)
+#define CHAddHook1(return_type, class, name1, type1) CHHook_(class, name1 ## $)
+#define CHAddHook2(return_type, class, name1, type1, name2, type2) CHHook_(class, name1 ## $ ## name2 ## $)
+#define CHAddHook3(return_type, class, name1, type1, name2, type2, name3, type3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $)
+#define CHAddHook4(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $)
+#define CHAddHook5(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4, name5, type5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $)
+#define CHAddClassHook0(return_type, class, name) CHHook_(class, name)
+#define CHAddClassHook1(return_type, class, name1, type1) CHHook_(class, name1 ## $)
+#define CHAddClassHook2(return_type, class, name1, type1, name2, type2) CHHook_(class, name1 ## $ ## name2 ## $)
+#define CHAddClassHook3(return_type, class, name1, type1, name2, type2, name3, type3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $)
+#define CHAddClassHook4(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $)
+#define CHAddClassHook5(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4, name5, type5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $)
+
+// Declarative style methods (automatically calls CHHook)
+#define CHDeclareMethod_(return_type, class_type, class_name, class_val, name, sel, sigdef, supercall, args...) \
+	__attribute__((constructor)) \
+	static inline void $ ## class_name ## _ ## name ## _register(); \
+	CHConstructor { \
+		CHLoadLateClass(class_name); \
+		$ ## class_name ## _ ## name ## _register(); \
+	} \
+	CHMethod_(return_type, class_type, class_name, class_val, name, sel, sigdef, supercall, args...)
+#define CHDeclareMethod0(return_type, class_type, name) \
+	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), name, name, CHDeclareSig0_(return_type), (self, _cmd))
+#define CHDeclareMethod1(return_type, class_type, name1, type1, arg1) \
+	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $, name1:, CHDeclareSig1_(return_type, type1), (self, _cmd, arg1), type1 arg1)
+#define CHDeclareMethod2(return_type, class_type, name1, type1, arg1, name2, type2, arg2) \
+	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $ ## name2 ## $, name1:name2:, CHDeclareSig2_(return_type, type1, type2), (self, _cmd, arg1, arg2), type1 arg1, type2 arg2)
+#define CHDeclareMethod3(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
+	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $, name1:name2:name3:, CHDeclareSig3_(return_type, type1, type2, type3), (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
+#define CHDeclareMethod4(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
+	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), name1(self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
+#define CHDeclareMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
+	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+#define CHDeclareClassMethod0(return_type, class_type, name) \
+	CHDeclareMethod_(return_type, Id, class_type, CHMetaClass(class_type), name, name, CHDeclareSig0_(return_type), (self, _cmd))
+#define CHDeclareClassMethod1(return_type, class_type, name1, type1, arg1) \
+	CHDeclareMethod_(return_type, Id, class_type, CHMetaClass(class_type), name1 ## $, name1:, CHDeclareSig1_(return_type, type1), (self, _cmd, arg1), type1 arg1)
+#define CHDeclareClassMethod2(return_type, class_type, name1, type1, arg1, name2, type2, arg2) \
+	CHDeclareMethod_(return_type, Id, class_type, CHMetaClass(class_type), name1 ## $ ## name2 ## $, name1:name2:, CHDeclareSig2_(return_type, type1, type2), (self, _cmd, arg1, arg2), type1 arg1, type2 arg2)
+#define CHDeclareClassMethod3(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
+	CHDeclareMethod_(return_type, Id, class_type, CHMetaClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $, name1:name2:name3:, CHDeclareSig3_(return_type, type1, type2, type3), (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
+#define CHDeclareClassMethod4(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
+	CHDeclareMethod_(return_type, Id, class_type, CHMetaClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
+#define CHDeclareClassMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
+	CHDeclareMethod_(return_type, Id, class_type, CHMetaClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+
+// Calling super class (or the old method as the case may be)
 #define CHSuper_(class_type, _cmd, name, args...) \
-	_ ## class_type ## _ ## name(self, _cmd, ##args)
+	$ ## class_type ## _ ## name ## _super(self, _cmd, ##args)
 #define CHSuper0(class_type, name) \
 	CHSuper_(class_type, @selector(name), name)
 #define CHSuper1(class_type, name1, val1) \
@@ -286,57 +317,8 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 #define CHSuper5(class_type, name1, val1, name2, val2, name3, val3, name4, val4, name5, val5) \
 	CHSuper_(class_type, @selector(name1:name2:name3:name4:name5:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, val1, val2, val3, val4, val5)
 
-// Declarative-style
-
-#define CHDeclareMethod_(type, class_type, class_name, name, supercall, sel, args...) \
-	@class class_name; \
-	static type (*_ ## class_name ## _ ## name)(class_name *self, SEL _cmd, ##args); \
-	static type $$ ## class_name ## _ ## name(class_name *self, SEL _cmd, ##args); \
-	static type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args); \
-	CHConstructor { \
-		CHLoadLateClass(class_name); \
-		CHHook_(class_name, name, CHClass(class_name), @selector(sel)); \
-	} \
-	CHMethod_(type, class_type, class_name, name, supercall, ##args)
-#define CHDeclareMethod0(type, class_type, name) \
-	CHDeclareMethod_(type, class_type *, class_type, name, (self, _cmd), name)
-#define CHDeclareMethod1(type, class_type, name1, type1, arg1) \
-	CHDeclareMethod_(type, class_type *, class_type, name1 ## $, (self, _cmd, arg1), name1:, type1 arg1)
-#define CHDeclareMethod2(type, class_type, name1, type1, arg1, name2, type2, arg2) \
-	CHDeclareMethod_(type, class_type *, class_type, name1 ## $ ## name2 ## $, (self, _cmd, arg1, arg2), name1:name2:, type1 arg1, type2 arg2)
-#define CHDeclareMethod3(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
-	CHDeclareMethod_(type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $, (self, _cmd, arg1, arg2, arg3), name1:name2:name3:, type1 arg1, type2 arg2, type3 arg3)
-#define CHDeclareMethod4(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
-	CHDeclareMethod_(type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, (self, _cmd, arg1, arg2, arg3, arg4), name1:name2:name3:name4:, type1 arg1, type2 arg2, type3 arg3, type4 arg4)
-#define CHDeclareMethod5(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
-	CHDeclareMethod_(type, class_type *, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ name5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), name1:name2:name3:name4:name5:, type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
-
-#define CHDeclareClassMethod_(type, class_type, class_name, name, supercall, sel, args...) \
-	@class class_name; \
-	static type (*_ ## class_name ## _ ## name)(class_name *self, SEL _cmd, ##args); \
-	static type $$ ## class_name ## _ ## name(class_name *self, SEL _cmd, ##args); \
-	static type $ ## class_name ## _ ## name(class_type self, SEL _cmd, ##args); \
-	CHConstructor { \
-		CHLoadLateClass(class_name); \
-		CHHook_(class_name, name, object_getClass(CHClass(class_name)), @selector(sel)); \
-	} \
-	CHMethod_(type, class_type, class_name, name, supercall, ##args)
-#define CHDeclareClassMethod0(type, class_type, name) \
-	CHDeclareClassMethod_(type, id, class_type, name, (self, _cmd), name)
-#define CHDeclareClassMethod1(type, class_type, name1, type1, arg1) \
-	CHDeclareClassMethod_(type, id, class_type, name1 ## $, (self, _cmd, arg1), name1:, type1 arg1)
-#define CHDeclareClassMethod2(type, class_type, name1, type1, arg1, name2, type2, arg2) \
-	CHDeclareClassMethod_(type, id, class_type, name1 ## $ ## name2 ## $, (self, _cmd, arg1, arg2), name1:name2:, type1 arg1, type2 arg2)
-#define CHDeclareClassMethod3(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
-	CHDeclareClassMethod_(type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $, (self, _cmd, arg1, arg2, arg3), name1:name2:name3:, type1 arg1, type2 arg2, type3 arg3)
-#define CHDeclareClassMethod4(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
-	CHDeclareClassMethod_(type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, (self, _cmd, arg1, arg2, arg3, arg4), name1:name2:name3:name4:, type1 arg1, type2 arg2, type3 arg3, type4 arg4)
-#define CHDeclareClassMethod5(type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
-	CHDeclareClassMethod_(type, id, class_type, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ name5 ## $, (self, _cmd, arg1, arg2, arg3, arg4, arg5), name1:name2:name3:name4:name5:, type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
-	
+// Create Class at Runtime (useful for creating subclasses of classes that can't be linked)
 #define CHRegisterClass(name, superName) for (int _tmp = ({ CHClass(name) = objc_allocateClassPair(CHClass(superName), #name, 0); CHMetaClass(name) = object_getClass(CHClass(name)); CHSuperClass(name) = class_getSuperclass(CHClass(name)); 1; }); _tmp; _tmp = ({ objc_registerClassPair(CHClass(name)), 0; }))
-
-// Add Ivar to a new class at runtime
 #define CHAddIvar(targetClass, name, type) \
 	class_addIvar(targetClass, #name, sizeof(type), log2(sizeof(type)), @encode(type))
 
@@ -374,11 +356,11 @@ static void CHScopeReleased(id sro)
 #define CHAutoreleasePoolForScope() \
 	void *CHAutoreleasePoolForScope __attribute__((unused)) __attribute__((cleanup(NSPopAutoreleasePool))) = NSPushAutoreleasePool(0)
 
+// Build Assertion
 #define CHBuildAssert(condition) \
 	((void)sizeof(char[1 - 2*!!(condition)]))
 
 // Profiling
-
 #ifdef CHEnableProfiling
 	#import <mach/mach_time.h>
 	struct CHProfileData
