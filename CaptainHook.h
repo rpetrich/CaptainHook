@@ -333,8 +333,27 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 
 // Create Class at Runtime (useful for creating subclasses of classes that can't be linked)
 #define CHRegisterClass(name, superName) for (int _tmp = ({ CHClass(name) = objc_allocateClassPair(CHClass(superName), #name, 0); CHMetaClass(name) = object_getClass(CHClass(name)); CHSuperClass(name) = class_getSuperclass(CHClass(name)); 1; }); _tmp; _tmp = ({ objc_registerClassPair(CHClass(name)), 0; }))
+#define CHAlignmentForSize_(s) ( \
+	__builtin_constant_p(s) ? ( \
+		(s) >=(1 << 13) ? (uint32_t)__builtin_log2f(s) \
+		(s) & (1 << 12) ? 12 : \
+		(s) & (1 << 11) ? 11 : \
+		(s) & (1 << 10) ? 10 : \
+		(s) & (1 <<  9) ?  9 : \
+		(s) & (1 <<  8) ?  8 : \
+		(s) & (1 <<  7) ?  7 : \
+		(s) & (1 <<  6) ?  6 : \
+		(s) & (1 <<  5) ?  5 : \
+		(s) & (1 <<  4) ?  4 : \
+		(s) & (1 <<  3) ?  3 : \
+		(s) & (1 <<  2) ?  2 : \
+		(s) & (1 <<  1) ?  1 : \
+		(s) & (1 <<  0) ?  0 : \
+		0 \
+	) : (uint32_t)__builtin_log2f(s) \
+)
 #define CHAddIvar(targetClass, name, type) \
-	class_addIvar(targetClass, #name, sizeof(type), log2(sizeof(type)), @encode(type))
+	class_addIvar(targetClass, #name, sizeof(type), CHAlignmentForSize_(sizeof(type)), @encode(type))
 
 // Retrieve reference to an Ivar value (can read and assign)
 __attribute__((unused)) CHInline
