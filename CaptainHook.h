@@ -259,22 +259,6 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 #define CHClassHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $)
 #define CHClassHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $)
 
-// New Method Registration (deprecated; no longer required)
-#define CHAddHook(count, args...) CHAddHook ## count(args)
-#define CHAddHook0(return_type, class, name) CHHook_(class, imp)
-#define CHAddHook1(return_type, class, name1, type1) CHHook_(class, name1 ## $)
-#define CHAddHook2(return_type, class, name1, type1, name2, type2) CHHook_(class, name1 ## $ ## name2 ## $)
-#define CHAddHook3(return_type, class, name1, type1, name2, type2, name3, type3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $)
-#define CHAddHook4(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $)
-#define CHAddHook5(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4, name5, type5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $)
-#define CHAddClassHook(count, args...) CAddClassHHook ## count(args)
-#define CHAddClassHook0(return_type, class, name) CHHook_(class, name)
-#define CHAddClassHook1(return_type, class, name1, type1) CHHook_(class, name1 ## $)
-#define CHAddClassHook2(return_type, class, name1, type1, name2, type2) CHHook_(class, name1 ## $ ## name2 ## $)
-#define CHAddClassHook3(return_type, class, name1, type1, name2, type2, name3, type3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $)
-#define CHAddClassHook4(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $)
-#define CHAddClassHook5(return_type, class, name1, type1, name2, type2, name3, type3, name4, type4, name5, type5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $)
-
 // Declarative style methods (automatically calls CHHook)
 #define CHDeclareMethod_(return_type, class_type, class_name, class_val, super_class_val, name, sel, sigdef, supercall, args...) \
 	static inline void $ ## class_name ## _ ## name ## _register(); \
