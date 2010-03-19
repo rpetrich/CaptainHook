@@ -167,6 +167,128 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len], type4_, type4_len); \
 	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len], type5_, type5_len); \
 	sig[return_len+type1_len+type2_len+type3_len+type4_len+type5_len+2] = '\0';
+#define CHDeclareSig6_(return_type, type1, type2, type3, type4, type5, type6) \
+	const char *return_ = @encode(return_type); \
+	size_t return_len = __builtin_strlen(return_); \
+	const char *type1_ = @encode(type1); \
+	size_t type1_len = __builtin_strlen(type1_); \
+	const char *type2_ = @encode(type2); \
+	size_t type2_len = __builtin_strlen(type2_); \
+	const char *type3_ = @encode(type3); \
+	size_t type3_len = __builtin_strlen(type3_); \
+	const char *type4_ = @encode(type4); \
+	size_t type4_len = __builtin_strlen(type4_); \
+	const char *type5_ = @encode(type5); \
+	size_t type5_len = __builtin_strlen(type5_); \
+	const char *type6_ = @encode(type6); \
+	size_t type6_len = __builtin_strlen(type6_); \
+	char sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len]; \
+	__builtin_memcpy(sig, return_, return_len); \
+	sig[return_len] = _C_ID; \
+	sig[return_len+1] = _C_SEL; \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len], type4_, type4_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len], type5_, type5_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len], type6_, type6_len); \
+	sig[return_len+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len+2] = '\0';
+#define CHDeclareSig7_(return_type, type1, type2, type3, type4, type5, type6, type7) \
+	const char *return_ = @encode(return_type); \
+	size_t return_len = __builtin_strlen(return_); \
+	const char *type1_ = @encode(type1); \
+	size_t type1_len = __builtin_strlen(type1_); \
+	const char *type2_ = @encode(type2); \
+	size_t type2_len = __builtin_strlen(type2_); \
+	const char *type3_ = @encode(type3); \
+	size_t type3_len = __builtin_strlen(type3_); \
+	const char *type4_ = @encode(type4); \
+	size_t type4_len = __builtin_strlen(type4_); \
+	const char *type5_ = @encode(type5); \
+	size_t type5_len = __builtin_strlen(type5_); \
+	const char *type6_ = @encode(type6); \
+	size_t type6_len = __builtin_strlen(type6_); \
+	const char *type7_ = @encode(type7); \
+	size_t type7_len = __builtin_strlen(type7_); \
+	char sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len+type7_len]; \
+	__builtin_memcpy(sig, return_, return_len); \
+	sig[return_len] = _C_ID; \
+	sig[return_len+1] = _C_SEL; \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len], type4_, type4_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len], type5_, type5_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len], type6_, type6_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len], type7_, type7_len); \
+	sig[return_len+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len+type7_len+2] = '\0';
+#define CHDeclareSig8_(return_type, type1, type2, type3, type4, type5, type6, type7, type8) \
+	const char *return_ = @encode(return_type); \
+	size_t return_len = __builtin_strlen(return_); \
+	const char *type1_ = @encode(type1); \
+	size_t type1_len = __builtin_strlen(type1_); \
+	const char *type2_ = @encode(type2); \
+	size_t type2_len = __builtin_strlen(type2_); \
+	const char *type3_ = @encode(type3); \
+	size_t type3_len = __builtin_strlen(type3_); \
+	const char *type4_ = @encode(type4); \
+	size_t type4_len = __builtin_strlen(type4_); \
+	const char *type5_ = @encode(type5); \
+	size_t type5_len = __builtin_strlen(type5_); \
+	const char *type6_ = @encode(type6); \
+	size_t type6_len = __builtin_strlen(type6_); \
+	const char *type7_ = @encode(type7); \
+	size_t type7_len = __builtin_strlen(type7_); \
+	const char *type8_ = @encode(type8); \
+	size_t type8_len = __builtin_strlen(type8_); \
+	char sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len+type7_len+type8_len]; \
+	__builtin_memcpy(sig, return_, return_len); \
+	sig[return_len] = _C_ID; \
+	sig[return_len+1] = _C_SEL; \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len], type4_, type4_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len], type5_, type5_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len], type6_, type6_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len], type7_, type7_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len+type7_len], type8_, type8_len); \
+	sig[return_len+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len+type7_len+type8_len+2] = '\0';
+#define CHDeclareSig9_(return_type, type1, type2, type3, type4, type5, type6, type7, type8, type9) \
+	const char *return_ = @encode(return_type); \
+	size_t return_len = __builtin_strlen(return_); \
+	const char *type1_ = @encode(type1); \
+	size_t type1_len = __builtin_strlen(type1_); \
+	const char *type2_ = @encode(type2); \
+	size_t type2_len = __builtin_strlen(type2_); \
+	const char *type3_ = @encode(type3); \
+	size_t type3_len = __builtin_strlen(type3_); \
+	const char *type4_ = @encode(type4); \
+	size_t type4_len = __builtin_strlen(type4_); \
+	const char *type5_ = @encode(type5); \
+	size_t type5_len = __builtin_strlen(type5_); \
+	const char *type6_ = @encode(type6); \
+	size_t type6_len = __builtin_strlen(type6_); \
+	const char *type7_ = @encode(type7); \
+	size_t type7_len = __builtin_strlen(type7_); \
+	const char *type8_ = @encode(type8); \
+	size_t type8_len = __builtin_strlen(type8_); \
+	const char *type9_ = @encode(type9); \
+	size_t type9_len = __builtin_strlen(type9_); \
+	char sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len+type7_len+type8_len+type9_len]; \
+	__builtin_memcpy(sig, return_, return_len); \
+	sig[return_len] = _C_ID; \
+	sig[return_len+1] = _C_SEL; \
+	__builtin_memcpy(&sig[return_len+2], type1_, type1_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len], type2_, type2_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len], type3_, type3_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len], type4_, type4_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len], type5_, type5_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len], type6_, type6_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len], type7_, type7_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len+type7_len], type8_, type8_len); \
+	__builtin_memcpy(&sig[return_len+2+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len+type7_len+type8_len], type9_, type9_len); \
+	sig[return_len+type1_len+type2_len+type3_len+type4_len+type5_len+type6_len+type7_len+type8_len+type9_len+2] = '\0';
 	
 #ifdef CHUseSubstrate
 #import <substrate.h>
@@ -184,6 +306,34 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 		} \
 	} \
 	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
+#define CHMethod_new_(return_type, class_type, class_name, class_val, super_class_val, name, sel, sigdef, supercall, args...) \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args); \
+	__attribute__((always_inline)) \
+	static inline void $ ## class_name ## _ ## name ## _register() { \
+		sigdef; \
+		class_addMethod(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, sig); \
+	} \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
+#define CHMethod_super_(return_type, class_type, class_name, class_val, super_class_val, name, sel, sigdef, supercall, args...) \
+	static return_type (*$ ## class_name ## _ ## name ## _super)(class_type self, SEL _cmd, ##args); \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args); \
+	__attribute__((always_inline)) \
+	static inline void $ ## class_name ## _ ## name ## _register() { \
+		if (class_val) { \
+			MSHookMessageEx(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, (IMP *)&$ ## class_name ## _ ## name ## _super); \
+		} \
+	} \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
+#define CHMethod_self_(return_type, class_type, class_name, class_val, super_class_val, name, sel, sigdef, supercall, args...) \
+	static return_type (*$ ## class_name ## _ ## name ## _super)(class_type self, SEL _cmd, ##args); \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args); \
+	__attribute__((always_inline)) \
+	static inline void $ ## class_name ## _ ## name ## _register() { \
+		if (class_val) { \
+			MSHookMessageEx(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, (IMP *)&$ ## class_name ## _ ## name ## _super); \
+		} \
+	} \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
 #else
 #define CHMethod_(return_type, class_type, class_name, class_val, super_class_val, name, sel, sigdef, supercall, args...) \
 	static return_type (*$ ## class_name ## _ ## name ## _super)(class_type self, SEL _cmd, ##args); \
@@ -195,20 +345,55 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args); \
 	__attribute__((always_inline)) \
 	static inline void $ ## class_name ## _ ## name ## _register() { \
-		if (class_val) { \
-			Method method = class_getInstanceMethod(class_val, @selector(sel)); \
-			if (method) { \
-				$ ## class_name ## _ ## name ## _super = (__typeof__($ ## class_name ## _ ## name ## _super))method_getImplementation(method); \
-				if (class_addMethod(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, method_getTypeEncoding(method))) { \
-					$ ## class_name ## _ ## name ## _super = &$ ## class_name ## _ ## name ## _closure; \
-				} else { \
-					method_setImplementation(method, (IMP)&$ ## class_name ## _ ## name ## _method); \
-				} \
+		Method method = class_getInstanceMethod(class_val, @selector(sel)); \
+		if (method) { \
+			$ ## class_name ## _ ## name ## _super = (__typeof__($ ## class_name ## _ ## name ## _super))method_getImplementation(method); \
+			if (class_addMethod(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, method_getTypeEncoding(method))) { \
+				$ ## class_name ## _ ## name ## _super = &$ ## class_name ## _ ## name ## _closure; \
 			} else { \
-				sigdef; \
-				class_addMethod(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, sig); \
+				method_setImplementation(method, (IMP)&$ ## class_name ## _ ## name ## _method); \
 			} \
+		} else { \
+			sigdef; \
+			class_addMethod(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, sig); \
 		} \
+	} \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
+#define CHMethod_new_(return_type, class_type, class_name, class_val, super_class_val, name, sel, sigdef, supercall, args...) \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args); \
+	__attribute__((always_inline)) \
+	static inline void $ ## class_name ## _ ## name ## _register() { \
+		sigdef; \
+		class_addMethod(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, sig); \
+	} \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
+#define CHMethod_super_(return_type, class_type, class_name, class_val, super_class_val, name, sel, sigdef, supercall, args...) \
+	static return_type (*$ ## class_name ## _ ## name ## _super)(class_type self, SEL _cmd, ##args); \
+	static return_type $ ## class_name ## _ ## name ## _closure(class_type self, SEL _cmd, ##args) { \
+		typedef return_type (*supType)(class_type, SEL, ## args); \
+		supType supFn = (supType)class_getMethodImplementation(super_class_val, _cmd); \
+		return supFn supercall; \
+	} \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args); \
+	__attribute__((always_inline)) \
+	static inline void $ ## class_name ## _ ## name ## _register() { \
+		Method method = class_getInstanceMethod(class_val, @selector(sel)); \
+		$ ## class_name ## _ ## name ## _super = (__typeof__($ ## class_name ## _ ## name ## _super))method_getImplementation(method); \
+		if (class_addMethod(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, method_getTypeEncoding(method))) { \
+			$ ## class_name ## _ ## name ## _super = &$ ## class_name ## _ ## name ## _closure; \
+		} else { \
+			method_setImplementation(method, (IMP)&$ ## class_name ## _ ## name ## _method); \
+		} \
+	} \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
+#define CHMethod_self_(return_type, class_type, class_name, class_val, super_class_val, name, sel, sigdef, supercall, args...) \
+	static return_type (*$ ## class_name ## _ ## name ## _super)(class_type self, SEL _cmd, ##args); \
+	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args); \
+	__attribute__((always_inline)) \
+	static inline void $ ## class_name ## _ ## name ## _register() { \
+		Method method = class_getInstanceMethod(class_val, @selector(sel)); \
+		$ ## class_name ## _ ## name ## _super = (__typeof__($ ## class_name ## _ ## name ## _super))method_getImplementation(method); \
+		method_setImplementation(method, (IMP)&$ ## class_name ## _ ## name ## _method); \
 	} \
 	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
 #endif
@@ -223,9 +408,17 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 #define CHMethod3(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
 	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $, name1:name2:name3:, CHDeclareSig3_(return_type, type1, type2, type3), (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
 #define CHMethod4(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
-	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), name1(self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
+	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
 #define CHMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
-	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+#define CHMethod6(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6) \
+	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $, name1:name2:name3:name4:name5:name6:, CHDeclareSig6_(return_type, type1, type2, type3, type4, type5, type6), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6)
+#define CHMethod7(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7) \
+	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $, name1:name2:name3:name4:name5:name6:name7:, CHDeclareSig7_(return_type, type1, type2, type3, type4, type5, type6, type7), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7)
+#define CHMethod8(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7, name8, type8, arg8) \
+	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $, name1:name2:name3:name4:name5:name6:name7:name8:, CHDeclareSig8_(return_type, type1, type2, type3, type4, type5, type6, type7, type8), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8)
+#define CHMethod9(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7, name8, type8, arg8, name9, type9, arg9) \
+	CHMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $ ## name9 ## $, name1:name2:name3:name4:name5:name6:name7:name8:name9:, CHDeclareSig9_(return_type, type1, type2, type3, type4, type5, type6, type7, type8, type9), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9)
 #define CHClassMethod(count, args...) \
 	CHClassMethod ## count(args)
 #define CHClassMethod0(return_type, class_type, name) \
@@ -240,6 +433,58 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	CHMethod_(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
 #define CHClassMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
 	CHMethod_(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+#define CHClassMethod6(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6) \
+	CHMethod_(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $, name1:name2:name3:name4:name5:name6:, CHDeclareSig6_(return_type, type1, type2, type3, type4, type5, type6), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6)
+#define CHClassMethod7(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7) \
+	CHMethod_(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $, name1:name2:name3:name4:name5:name6:name7:, CHDeclareSig7_(return_type, type1, type2, type3, type4, type5, type6, type7), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7)
+#define CHClassMethod8(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7, name8, type8, arg8) \
+	CHMethod_(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $, name1:name2:name3:name4:name5:name6:name7:name8:, CHDeclareSig8_(return_type, type1, type2, type3, type4, type5, type6, type7, type8), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8)
+#define CHClassMethod9(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7, name8, type8, arg8, name9, type9, arg9) \
+	CHMethod_(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $ ## name9 ## $, name1:name2:name3:name4:name5:name6:name7:name8:name9:, CHDeclareSig9_(return_type, type1, type2, type3, type4, type5, type6, type7, type8, type9), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9)
+#define CHOptimizedMethod(count, args...) \
+	CHOptimizedMethod ## count(args)
+#define CHOptimizedMethod0(optimization, return_type, class_type, name) \
+	CHMethod_ ## optimization ## _(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name, name, CHDeclareSig0_(return_type), (self, _cmd))
+#define CHOptimizedMethod1(optimization, return_type, class_type, name1, type1, arg1) \
+	CHMethod_ ## optimization ## _(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $, name1:, CHDeclareSig1_(return_type, type1), (self, _cmd, arg1), type1 arg1)
+#define CHOptimizedMethod2(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2) \
+	CHMethod_ ## optimization ## _(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $, name1:name2:, CHDeclareSig2_(return_type, type1, type2), (self, _cmd, arg1, arg2), type1 arg1, type2 arg2)
+#define CHOptimizedMethod3(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
+	CHMethod_ ## optimization ## _(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $, name1:name2:name3:, CHDeclareSig3_(return_type, type1, type2, type3), (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
+#define CHOptimizedMethod4(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
+	CHMethod_ ## optimization ## _(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
+#define CHOptimizedMethod5(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
+	CHMethod_ ## optimization ## _(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+#define CHOptimizedMethod6(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6) \
+	CHMethod_ ## optimization ## _(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $, name1:name2:name3:name4:name5:name6:, CHDeclareSig6_(return_type, type1, type2, type3, type4, type5, type6), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6)
+#define CHOptimizedMethod7(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7) \
+	CHMethod_ ## optimization ## _(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $, name1:name2:name3:name4:name5:name6:name7:, CHDeclareSig7_(return_type, type1, type2, type3, type4, type5, type6, type7), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7)
+#define CHOptimizedMethod8(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7, name8, type8, arg8) \
+	CHMethod_ ## optimization ## _(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $, name1:name2:name3:name4:name5:name6:name7:name8:, CHDeclareSig8_(return_type, type1, type2, type3, type4, type5, type6, type7, type8), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8)
+#define CHOptimizedMethod9(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7, name8, type8, arg8, name9, type9, arg9) \
+	CHMethod_ ## optimization ## _(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $ ## name9 ## $, name1:name2:name3:name4:name5:name6:name7:name8:name9:, CHDeclareSig9_(return_type, type1, type2, type3, type4, type5, type6, type7, type8, type9), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9)
+#define CHOptimizedClassMethod(count, args...) \
+	CHOptimizedClassMethod ## count(args)
+#define CHOptimizedClassMethod0(optimization, return_type, class_type, name) \
+	CHMethod_ ## optimization ## _(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name, name, CHDeclareSig0_(return_type), (self, _cmd))
+#define CHOptimizedClassMethod1(optimization, return_type, class_type, name1, type1, arg1) \
+	CHMethod_ ## optimization ## _(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $, name1:, CHDeclareSig1_(return_type, type1), (self, _cmd, arg1), type1 arg1)
+#define CHOptimizedClassMethod2(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2) \
+	CHMethod_ ## optimization ## _(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $, name1:name2:, CHDeclareSig2_(return_type, type1, type2), (self, _cmd, arg1, arg2), type1 arg1, type2 arg2)
+#define CHOptimizedClassMethod3(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
+	CHMethod_ ## optimization ## _(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $, name1:name2:name3:, CHDeclareSig3_(return_type, type1, type2, type3), (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
+#define CHOptimizedClassMethod4(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
+	CHMethod_ ## optimization ## _(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
+#define CHOptimizedClassMethod5(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
+	CHMethod_ ## optimization ## _(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+#define CHOptimizedClassMethod6(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6) \
+	CHMethod_ ## optimization ## _(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $, name1:name2:name3:name4:name5:name6:, CHDeclareSig6_(return_type, type1, type2, type3, type4, type5, type6), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6)
+#define CHOptimizedClassMethod7(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7) \
+	CHMethod_ ## optimization ## _(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $, name1:name2:name3:name4:name5:name6:name7:, CHDeclareSig7_(return_type, type1, type2, type3, type4, type5, type6, type7), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7)
+#define CHOptimizedClassMethod8(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7, name8, type8, arg8) \
+	CHMethod_ ## optimization ## _(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $, name1:name2:name3:name4:name5:name6:name7:name8:, CHDeclareSig8_(return_type, type1, type2, type3, type4, type5, type6, type7, type8), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8)
+#define CHOptimizedClassMethod9(optimization, return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7, name8, type8, arg8, name9, type9, arg9) \
+	CHMethod_ ## optimization ## _(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $ ## name9 ## $, name1:name2:name3:name4:name5:name6:name7:name8:name9:, CHDeclareSig9_(return_type, type1, type2, type3, type4, type5, type6, type7, type8, type9), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9)
 
 // Replacement Method Registration
 #define CHHook_(class_name, name) \
@@ -251,6 +496,10 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 #define CHHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $)
 #define CHHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $)
 #define CHHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $)
+#define CHHook6(class, name1, name2, name3, name4, name5, name6) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $)
+#define CHHook7(class, name1, name2, name3, name4, name5, name6, name7) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $)
+#define CHHook8(class, name1, name2, name3, name4, name5, name6, name7, name8) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $)
+#define CHHook9(class, name1, name2, name3, name4, name5, name6, name7, name8, name9) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $ ## name9 ## $)
 #define CHClassHook(count, args...) CHClassHook ## count(args)
 #define CHClassHook0(class, name) CHHook_(class, name)
 #define CHClassHook1(class, name1) CHHook_(class, name1 ## $)
@@ -258,6 +507,10 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 #define CHClassHook3(class, name1, name2, name3) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $)
 #define CHClassHook4(class, name1, name2, name3, name4) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $)
 #define CHClassHook5(class, name1, name2, name3, name4, name5) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $)
+#define CHClassHook6(class, name1, name2, name3, name4, name5, name6) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $)
+#define CHClassHook7(class, name1, name2, name3, name4, name5, name6, name7) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $)
+#define CHClassHook8(class, name1, name2, name3, name4, name5, name6, name7, name8) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $)
+#define CHClassHook9(class, name1, name2, name3, name4, name5, name6, name7, name8, name9) CHHook_(class, name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $ ## name9 ## $)
 
 // Declarative style methods (automatically calls CHHook)
 #define CHDeclareMethod_(return_type, class_type, class_name, class_val, super_class_val, name, sel, sigdef, supercall, args...) \
@@ -279,9 +532,17 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 #define CHDeclareMethod3(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3) \
 	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $, name1:name2:name3:, CHDeclareSig3_(return_type, type1, type2, type3), (self, _cmd, arg1, arg2, arg3), type1 arg1, type2 arg2, type3 arg3)
 #define CHDeclareMethod4(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4) \
-	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), name1(self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
+	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
 #define CHDeclareMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
 	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## arg5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+#define CHDeclareMethod6(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6) \
+	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $, name1:name2:name3:name4:name5:name6:, CHDeclareSig6_(return_type, type1, type2, type3, type4, type5, type6), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6)
+#define CHDeclareMethod7(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7) \
+	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $, name1:name2:name3:name4:name5:name6:name7:, CHDeclareSig7_(return_type, type1, type2, type3, type4, type5, type6, type7), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7)
+#define CHDeclareMethod8(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7, name8, type8, arg8) \
+	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $, name1:name2:name3:name4:name5:name6:name7:name8:, CHDeclareSig8_(return_type, type1, type2, type3, type4, type5, type6, type7, type8), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8)
+#define CHDeclareMethod9(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7, name8, type8, arg8, name9, type9, arg9) \
+	CHDeclareMethod_(return_type, class_type *, class_type, CHClass(class_type), CHSuperClass(class_type), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $ ## name9 ## $, name1:name2:name3:name4:name5:name6:name7:name8:name9:, CHDeclareSig9_(return_type, type1, type2, type3, type4, type5, type6, type7, type8, type9), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9)
 #define CHDeclareClassMethod(count, args...) \
 	CHDeclareClassMethod ## count(args)
 #define CHDeclareClassMethod0(return_type, class_type, name) \
@@ -296,6 +557,14 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	CHDeclareMethod_(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, name1:name2:name3:name4:, CHDeclareSig4_(return_type, type1, type2, type3, type4), (self, _cmd, arg1, arg2, arg3, arg4), type1 arg1, type2 arg2, type3 arg3, type4 arg4)
 #define CHDeclareClassMethod5(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5) \
 	CHDeclareMethod_(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, name1:name2:name3:name4:name5:, CHDeclareSig5_(return_type, type1, type2, type3, type4, type5), (self, _cmd, arg1, arg2, arg3, arg4, arg5), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)
+#define CHDeclareClassMethod6(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6) \
+	CHDeclareMethod_(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $, name1:name2:name3:name4:name5:name6:, CHDeclareSig6_(return_type, type1, type2, type3, type4, type5, type6), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6)
+#define CHDeclareClassMethod7(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7) \
+	CHDeclareMethod_(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $, name1:name2:name3:name4:name5:name6:name7:, CHDeclareSig7_(return_type, type1, type2, type3, type4, type5, type6, type7), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7)
+#define CHDeclareClassMethod8(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7, name8, type8, arg8) \
+	CHDeclareMethod_(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $, name1:name2:name3:name4:name5:name6:name7:name8:, CHDeclareSig8_(return_type, type1, type2, type3, type4, type5, type6, type7, type8), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8)
+#define CHDeclareClassMethod9(return_type, class_type, name1, type1, arg1, name2, type2, arg2, name3, type3, arg3, name4, type4, arg4, name5, type5, arg5, name6, type6, arg6, name7, type7, arg7, name8, type8, arg8, name9, type9, arg9) \
+	CHDeclareMethod_(return_type, id, class_type, CHMetaClass(class_type), object_getClass(CHMetaClass(class_type)), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $ ## name9 ## $, name1:name2:name3:name4:name5:name6:name7:name8:name9:, CHDeclareSig9_(return_type, type1, type2, type3, type4, type5, type6, type7, type8, type9), (self, _cmd, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9), type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9)
 
 // Calling super class (or the old method as the case may be)
 #define CHSuper_(class_type, _cmd, name, args...) \
@@ -314,12 +583,39 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	CHSuper_(class_type, @selector(name1:name2:name3:name4:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $, val1, val2, val3, val4)
 #define CHSuper5(class_type, name1, val1, name2, val2, name3, val3, name4, val4, name5, val5) \
 	CHSuper_(class_type, @selector(name1:name2:name3:name4:name5:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $, val1, val2, val3, val4, val5)
+#define CHSuper6(class_type, name1, val1, name2, val2, name3, val3, name4, val4, name5, val5, name6, val6) \
+	CHSuper_(class_type, @selector(name1:name2:name3:name4:name5:name6:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $, val1, val2, val3, val4, val5, val6)
+#define CHSuper7(class_type, name1, val1, name2, val2, name3, val3, name4, val4, name5, val5, name6, val6, name7, val7) \
+	CHSuper_(class_type, @selector(name1:name2:name3:name4:name5:name6:name7:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $, val1, val2, val3, val4, val5, val6, val7)
+#define CHSuper8(class_type, name1, val1, name2, val2, name3, val3, name4, val4, name5, val5, name6, val6, name7, val7, name8, val8) \
+	CHSuper_(class_type, @selector(name1:name2:name3:name4:name5:name6:name7:name8:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $, val1, val2, val3, val4, val5, val6, val7, val8)
+#define CHSuper9(class_type, name1, val1, name2, val2, name3, val3, name4, val4, name5, val5, name6, val6, name7, val7, name8, val8, name9, val9) \
+	CHSuper_(class_type, @selector(name1:name2:name3:name4:name5:name6:name7:name8:name9:), name1 ## $ ## name2 ## $ ## name3 ## $ ## name4 ## $ ## name5 ## $ ## name6 ## $ ## name7 ## $ ## name8 ## $ ## name9 ## $, val1, val2, val3, val4, val5, val6, val7, val8, val9)
 
 // Create Class at Runtime (useful for creating subclasses of classes that can't be linked)
 #define CHRegisterClass(name, superName) for (int _tmp = ({ CHClass(name) = objc_allocateClassPair(CHClass(superName), #name, 0); CHMetaClass(name) = object_getClass(CHClass(name)); CHSuperClass(name) = class_getSuperclass(CHClass(name)); 1; }); _tmp; _tmp = ({ objc_registerClassPair(CHClass(name)), 0; }))
-#define CHAlignmentForSize_(s) ( \
+#define CHAlignmentForSize_(size) ({ \
+	size_t s = size; \
 	__builtin_constant_p(s) ? ( \
-		(s) >=(1 << 13) ? (uint32_t)__builtin_log2f(s) \
+		(s) & (1 << 31) ? 31 : \
+		(s) & (1 << 30) ? 30 : \
+		(s) & (1 << 29) ? 29 : \
+		(s) & (1 << 28) ? 28 : \
+		(s) & (1 << 27) ? 27 : \
+		(s) & (1 << 26) ? 26 : \
+		(s) & (1 << 25) ? 25 : \
+		(s) & (1 << 24) ? 24 : \
+		(s) & (1 << 23) ? 23 : \
+		(s) & (1 << 22) ? 22 : \
+		(s) & (1 << 21) ? 21 : \
+		(s) & (1 << 20) ? 20 : \
+		(s) & (1 << 19) ? 19 : \
+		(s) & (1 << 18) ? 18 : \
+		(s) & (1 << 17) ? 17 : \
+		(s) & (1 << 16) ? 16 : \
+		(s) & (1 << 15) ? 15 : \
+		(s) & (1 << 14) ? 14 : \
+		(s) & (1 << 13) ? 13 : \
 		(s) & (1 << 12) ? 12 : \
 		(s) & (1 << 11) ? 11 : \
 		(s) & (1 << 10) ? 10 : \
@@ -334,8 +630,8 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 		(s) & (1 <<  1) ?  1 : \
 		(s) & (1 <<  0) ?  0 : \
 		0 \
-	) : (uint32_t)__builtin_log2f(s) \
-)
+	) : (uint32_t)log2f(s); \
+})
 #define CHAddIvar(targetClass, name, type) \
 	class_addIvar(targetClass, #name, sizeof(type), CHAlignmentForSize_(sizeof(type)), @encode(type))
 
