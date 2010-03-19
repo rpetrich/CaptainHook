@@ -378,11 +378,13 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	__attribute__((always_inline)) \
 	static inline void $ ## class_name ## _ ## name ## _register() { \
 		Method method = class_getInstanceMethod(class_val, @selector(sel)); \
-		$ ## class_name ## _ ## name ## _super = (__typeof__($ ## class_name ## _ ## name ## _super))method_getImplementation(method); \
-		if (class_addMethod(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, method_getTypeEncoding(method))) { \
-			$ ## class_name ## _ ## name ## _super = &$ ## class_name ## _ ## name ## _closure; \
-		} else { \
-			method_setImplementation(method, (IMP)&$ ## class_name ## _ ## name ## _method); \
+		if (method) { \
+			$ ## class_name ## _ ## name ## _super = (__typeof__($ ## class_name ## _ ## name ## _super))method_getImplementation(method); \
+			if (class_addMethod(class_val, @selector(sel), (IMP)&$ ## class_name ## _ ## name ## _method, method_getTypeEncoding(method))) { \
+				$ ## class_name ## _ ## name ## _super = &$ ## class_name ## _ ## name ## _closure; \
+			} else { \
+				method_setImplementation(method, (IMP)&$ ## class_name ## _ ## name ## _method); \
+			} \
 		} \
 	} \
 	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
@@ -392,8 +394,10 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	__attribute__((always_inline)) \
 	static inline void $ ## class_name ## _ ## name ## _register() { \
 		Method method = class_getInstanceMethod(class_val, @selector(sel)); \
-		$ ## class_name ## _ ## name ## _super = (__typeof__($ ## class_name ## _ ## name ## _super))method_getImplementation(method); \
-		method_setImplementation(method, (IMP)&$ ## class_name ## _ ## name ## _method); \
+		if (method) { \
+			$ ## class_name ## _ ## name ## _super = (__typeof__($ ## class_name ## _ ## name ## _super))method_getImplementation(method); \
+			method_setImplementation(method, (IMP)&$ ## class_name ## _ ## name ## _method); \
+		} \
 	} \
 	static return_type $ ## class_name ## _ ## name ## _method(class_type self, SEL _cmd, ##args)
 #endif
