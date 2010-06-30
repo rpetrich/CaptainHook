@@ -663,15 +663,8 @@ static void CHScopeReleased(id sro)
 #define CHScopeReleased \
 	__attribute__((cleanup(CHScopeReleased)))
 
-#ifdef __cplusplus
-	extern "C" void *NSPushAutoreleasePool(NSUInteger capacity);
-	extern "C" void NSPopAutoreleasePool(void *token);
-#else
-	void *NSPushAutoreleasePool(NSUInteger capacity);
-	void NSPopAutoreleasePool(void *token);
-#endif
 #define CHAutoreleasePoolForScope() \
-	void *CHAutoreleasePoolForScope __attribute__((unused)) __attribute__((cleanup(NSPopAutoreleasePool))) = NSPushAutoreleasePool(0)
+	NSAutoreleasePool *CHAutoreleasePoolForScope __attribute__((unused)) CHScopeReleased = [[NSAutoreleasePool alloc] init]
 
 // Build Assertion
 #define CHBuildAssert(condition) \
