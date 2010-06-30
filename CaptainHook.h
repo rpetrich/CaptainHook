@@ -656,9 +656,9 @@ static void *CHIvar_(id object, const char *name)
 
 // Scope Autorelease
 __attribute__((unused)) CHInline
-static void CHScopeReleased(id sro)
+static void CHScopeReleased(id *sro)
 {
-    [sro release];
+    [*sro release];
 }
 #define CHScopeReleased \
 	__attribute__((cleanup(CHScopeReleased)))
