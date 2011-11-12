@@ -41,9 +41,9 @@
 
 // Cached Class Declaration (allows hooking methods, and fast lookup of classes)
 struct CHClassDeclaration_ {
-	id class_;
-	id metaClass_;
-	id superClass_;
+	Class class_;
+	Class metaClass_;
+	Class superClass_;
 };
 typedef struct CHClassDeclaration_ CHClassDeclaration_;
 #define CHDeclareClass(name) \
@@ -51,18 +51,15 @@ typedef struct CHClassDeclaration_ CHClassDeclaration_;
 	static CHClassDeclaration_ name ## $;
 
 // Loading Cached Classes (use CHLoadClass when class is linkable, CHLoadLateClass when it isn't)
-#define CHLoadLateClass(name) ({ \
-	CHClass(name) = objc_getClass(#name); \
-	CHMetaClass(name) = object_getClass(CHClass(name)); \
-	CHSuperClass(name) = class_getSuperclass(CHClass(name)); \
-	CHClass(name); \
-})
-#define CHLoadClass(name) ({ \
-	CHClass(name) = [name class]; \
-	CHMetaClass(name) = object_getClass(CHClass(name)); \
-	CHSuperClass(name) = class_getSuperclass(CHClass(name)); \
-	CHClass(name); \
-})
+static inline Class CHLoadClass_(CHClassDeclaration_ *declaration, Class value)
+{
+	declaration->class_ = value;
+	declaration->metaClass_ = object_getClass(value);
+	declaration->superClass_ = class_getSuperclass(value);
+	return value;
+}
+#define CHLoadLateClass(name) CHLoadClass_(&name ## $, objc_getClass(#name))
+#define CHLoadClass(name) CHLoadClass_(&name ## $, [name class])
 
 // Quick Lookup of cached classes, and common methods on them
 #define CHClass(name) name ## $.class_
@@ -645,7 +642,11 @@ static void *CHIvar_(id object, const char *name)
 {
 	Ivar ivar = class_getInstanceVariable(object_getClass(object), name);
 	if (ivar)
+#if __has_feature(objc_arc)
+		return (void *)&((char *)(__bridge void *)object)[ivar_getOffset(ivar)];
+#else
 		return (void *)&((char *)object)[ivar_getOffset(ivar)];
+#endif
 	return NULL;
 }
 #define CHIvarRef(object, name, type) \
@@ -654,6 +655,7 @@ static void *CHIvar_(id object, const char *name)
 	(*CHIvarRef(object, name, type))
 	// Warning: Dereferences NULL if object is nil or name isn't found. To avoid this save CHIvarRef(...) and test if != NULL
 
+#if !__has_feature(objc_arc)
 // Scope Autorelease
 __attribute__((unused)) CHInline
 static void CHScopeReleased(id *sro)
@@ -665,6 +667,7 @@ static void CHScopeReleased(id *sro)
 
 #define CHAutoreleasePoolForScope() \
 	NSAutoreleasePool *CHAutoreleasePoolForScope __attribute__((unused)) CHScopeReleased = [[NSAutoreleasePool alloc] init]
+#endif
 
 // Build Assertion
 #define CHBuildAssert(condition) \
