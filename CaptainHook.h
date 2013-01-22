@@ -688,12 +688,12 @@ static void *CHIvar_(id object, const char *name)
 	do { \
 		NSNumber * objVal = CHPropertyGetValue(class, name); \
 		[objVal getValue:& val ]; \
-	} while(0);
+	} while(0)
 #define CHPrimitivePropertySetValue(class, name, type, val) \
 	do { \
 		NSValue *objVal = [NSValue value:& val withObjCType:@encode( type )]; \
 		CHPropertySetValue(class, name, objVal, OBJC_ASSOCIATION_RETAIN_NONATOMIC); \
-	} while(0);
+	} while(0)
 
 // Primitive property equivalent (ie. BOOL, int, structs)
 #define CHPrimitiveProperty(class, type, getter, setter, default) \
@@ -710,7 +710,7 @@ static void *CHIvar_(id object, const char *name)
 	do { \
 		CHHook0(class, getter); \
 		CHHook1(class, setter); \
-	} while(0);
+	} while(0)
 
 #ifndef CHHasARC
 // Scope Autorelease
