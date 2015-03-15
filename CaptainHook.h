@@ -739,7 +739,7 @@ static void CHScopeReleased(id *sro)
 		uint64_t startTime;
 	};
 	__attribute__((unused)) CHInline
-	static void CHInline CHProfileCalculateDurationAndLog_(struct CHProfileData *profileData)
+	static void CHProfileCalculateDurationAndLog_(struct CHProfileData *profileData)
 	{
 		uint64_t duration = mach_absolute_time() - profileData->startTime;
 		mach_timebase_info_data_t info;
